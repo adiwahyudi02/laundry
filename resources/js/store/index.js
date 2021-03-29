@@ -6,6 +6,7 @@ import pegawai from './module/pegawai'
 import pelanggan from './module/pelanggan'
 import paket from './module/paket'
 import transaksi from './module/transaksi'
+import auth from './module/auth'
 
 Vue.use(Vuex)
 
@@ -37,7 +38,8 @@ export default new Vuex.Store({
         pegawai,
         pelanggan,
         paket,
-        transaksi
+        transaksi,
+        auth
     },
     strict: debug
 })

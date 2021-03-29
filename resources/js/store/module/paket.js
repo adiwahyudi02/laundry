@@ -64,6 +64,48 @@ const getters = {
                 'persentase': Math.round((jumlah_topi.length / state.items.length * 100) * 10) / 10
             },
         }
+    },
+    getItemsGrupByJenis : (state) => {
+        let bed_cover = state.items.filter(item => item.jenis == 'Bed Cover');
+        let boneka = state.items.filter(item => item.jenis == 'Boneka');
+        let jas = state.items.filter(item => item.jenis == 'Jas');
+        let kiloan = state.items.filter(item => item.jenis == 'Kiloan');
+        let sepatu = state.items.filter(item => item.jenis == 'Sepatu');
+        let tas = state.items.filter(item => item.jenis == 'Tas');
+        let topi = state.items.filter(item => item.jenis == 'Topi');
+
+        var result = [
+            {
+                'jenis': 'Bed Cover',
+                'data': bed_cover
+            },
+            {
+                'jenis': 'Boneka',
+                'data': boneka
+            },
+            {
+                'jenis': 'Jas',
+                'data': jas
+            },
+            {
+                'jenis': 'Kiloan',
+                'data': kiloan
+            },
+            {
+                'jenis': 'Sepatu',
+                'data': sepatu
+            },
+            {
+                'jenis': 'Tas',
+                'data': tas
+            },
+            {
+                'jenis': 'Topi',
+                'data': topi
+            }
+        ]
+
+        return result;
     }
 }
 

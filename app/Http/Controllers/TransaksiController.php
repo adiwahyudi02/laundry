@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth; 
 
 use App\Models\Transaksi;
+use App\Models\DetailTransaksi;
 
 class TransaksiController extends Controller
 {
@@ -40,21 +42,48 @@ class TransaksiController extends Controller
      */
     public function store(Request $request)
     {
+
+        $awal_hari = date("Y-m-d") . 'T00:00:00.000000Z';
+        $cek = Transaksi::where('created_at', '>=', $awal_hari)->count();
+        $kode_invoice =  'TRX/' . date("Ymd") . '/' . $cek + 1;
+        
+        $pengerjaan_terlama = max(array_map(function($value) {
+            return $value['lama_pengerjaan'];
+        },$request->detail_pemesanan));
+
+        $date = date('Y-m-d H:i:s');
+        $batas_waktu = date("Y-m-d H:i:s", strtotime( '+' . $pengerjaan_terlama .' days' . ' -17 hours', strtotime($date)));
+
+        $tgl_bayar = ($request->dibayar == 'Lunas') ? date("Y-m-d H:i:s", strtotime('-17 hours', strtotime($date))) : null ;
+
+
         $create = Transaksi::create([
             'outlet_id' =>  $request->outlet_id,
-            'kode_invoice' =>  $request->kode_invoice,
-            'member_id' => $request->member_id,
-            'tgl' =>  $request->tgl,
-            'batas_waktu' =>  $request->batas_waktu,
-            'tgl_bayar' => $request->tgl_bayar,
+            'kode_invoice' =>  $kode_invoice,
+            'member_id' => $request->member['id'],
+            'tgl' =>  date("Y-m-d H:i:s", strtotime('-17 hours', strtotime($date))),
+            'batas_waktu' =>  $batas_waktu,
+            'tgl_bayar' => $tgl_bayar,
+            'dibayar' =>  $request->dibayar,
             'biaya_tambahan' =>  $request->biaya_tambahan,
             'diskon' =>  $request->diskon,
             'pajak' => $request->pajak,
-            'status' =>  $request->status,
-            'dibayar' =>  $request->dibayar,
-            'user_id' => $request->user_id,
-            'total' => $request->total
+            'status' =>  'baru',
+            'user_id' => Auth::user()->id,
+            'total' => $request->total,
+            'subtotal' => $request->subtotal
         ]);
+        
+        $transaksi_id = $create->id;
+
+        foreach ($request->detail_pemesanan as $value) {
+            $create = DetailTransaksi::create([
+                'transaksi_id' => $transaksi_id,
+                'paket_id' => $value['id'],
+                'qty' => $value['val'],
+                'keterangan' => ''
+            ]);
+        }
 
         if($create){
             return response()->json([
@@ -309,6 +338,26 @@ class TransaksiController extends Controller
                     'status' => false
                 ]);
             }
+        }
+    }
+
+    public function updateBayar($id)
+    { 
+        $date = date('Y-m-d H:i:s');
+        $update = Transaksi::find($id)->update([
+            'tgl_bayar' => date("Y-m-d H:i:s", strtotime('-17 hours', strtotime($date))),
+            'dibayar' =>  'Lunas'
+        ]);
+
+        if($update){
+            return response()->json([
+                'status' => true
+            ]);
+        }
+        else{
+            return response()->json([
+                'status' => false
+            ]);
         }
     }
 }

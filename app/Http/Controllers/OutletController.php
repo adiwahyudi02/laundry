@@ -66,7 +66,11 @@ class OutletController extends Controller
      */
     public function show($id)
     {
-        //
+        $data = Outlet::where('id', $id)->first();
+
+        return response()->json([
+            'data' => $data
+        ]);
     }
 
     /**

@@ -72,6 +72,12 @@ const actions = {
         }))
         await commit('SET_ISLOADING_ACTION', false, { root: true })
     },
+    async GET_INFO_BY_ID_REQUEST({ state, commit }, id){
+        // await commit('SET_ISLOADING_ACTION', true, { root: true })
+        const item = await axios.get('/api/outlet/' + id, config);
+        commit('SET_INFO_BY_ID', item.data.data)
+        // await commit('SET_ISLOADING_ACTION', false, { root: true })
+    },
     async UPDATE({ dispatch, commit }, data){
         await commit('SET_ISLOADING_ACTION', true, { root: true })
         await axios.put('api/outlet/' + data.id, {

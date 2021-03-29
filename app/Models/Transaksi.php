@@ -23,7 +23,8 @@ class Transaksi extends Model
         'status',
         'dibayar',
         'user_id',
-        'total'
+        'total',
+        'subtotal'
     ];
 
     public function outlet()

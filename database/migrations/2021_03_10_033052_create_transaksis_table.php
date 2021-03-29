@@ -30,6 +30,8 @@ class CreateTransaksisTable extends Migration
             $table->integer('pajak');
             $table->enum('status', ['baru', 'proses', 'selesai', 'diambil']);
             $table->enum('dibayar', ['Lunas', 'Belum Bayar']);
+            $table->integer('subtotal');
+            $table->integer('total');
             $table->foreignId('user_id')
                     ->constrained()
                     ->onDelete('cascade');

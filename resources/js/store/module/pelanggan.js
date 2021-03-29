@@ -64,6 +64,24 @@ const getters = {
             }
         }
         
+    },
+    getLengthPertumbuhanPelannganTahunIni: (state) => {
+        const date = new Date();
+        var result = []
+
+        for (let index = 1; index <= 12; index++) {
+            var pelanggaan = 0
+            state.items.filter(i => {
+                let item_bulan = i.created_at.substring(5, 7)
+                if(item_bulan == ("0" + (index)).slice(-2)) {
+                    pelanggaan++
+                }
+            })
+            if( index <= date.getMonth() + 1) {
+                result.push(pelanggaan)
+            }
+        }
+        return result
     }
 }
 

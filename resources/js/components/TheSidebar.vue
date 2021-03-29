@@ -8,7 +8,7 @@
                     </div>
                     
                     <div style="margin-top: 100px">
-                        <router-link :to="{ name: 'dashboard', params: { id: id }}" class="text-decoration-none navigasi-sidebar">
+                        <router-link v-if="getUser.data.role != 'kasir'" :to="{ name: 'dashboard', params: { id: id }}" class="text-decoration-none navigasi-sidebar">
                             <div class="item-link-navigasi py-2 px-2 rounded d-flex justify-content-start align-items-center my-2">  
                                 <i class="fas fa-columns color-primary mr-3"></i>
                                 <p class="color-primary mb-0" style="font-size: 10pt">Dashboard</p>
@@ -17,7 +17,7 @@
                         <div class="mb-4 mt-5">
                             <p class="font-weight-bold" style="color: lightgrey; font-size: 8pt">OUTLET</p>
                         </div>
-                        <router-link :to="{ name: 'pegawai', params: { id: id }}" class="text-decoration-none navigasi-sidebar">
+                        <router-link v-if="getUser.data.role != 'kasir'" :to="{ name: 'pegawai', params: { id: id }}" class="text-decoration-none navigasi-sidebar">
                             <div class="item-link-navigasi py-2 px-2 rounded d-flex justify-content-start align-items-center my-2">  
                                 <i class="far fa-folder-open color-primary mr-3"></i>
                                 <p class="color-primary mb-0" style="font-size: 10pt">Kelola</p>
@@ -29,10 +29,6 @@
                                 <p class="color-primary mb-0" style="font-size: 10pt">Pesanan</p>
                             </div>
                         </router-link>
-                        <div class="item-link-navigasi py-2 px-2 rounded d-flex justify-content-start align-items-center my-2">  
-                            <i class="far fa-chart-bar color-primary mr-3"></i>
-                            <p class="color-primary mb-0" style="font-size: 10pt">Laporan</p>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -68,12 +64,6 @@
                                 </div>
                             </div>
                         </router-link>
-                        <div class="d-flex justify-content-start align-items-center my-4" id="menu-item-laporan">  
-                            <i class="far fa-chart-bar color-primary mr-3 ml-3"></i>
-                            <div class="rounded background-primary py-2 px-3 text-menu-item-middle">
-                                <p class="text-light mb-0 text-center" style="font-size: 10pt">Laporan</p>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -115,10 +105,6 @@
                                     <p class="color-primary mb-0" style="font-size: 10pt">Pesanan</p>
                                 </div>
                             </router-link>
-                            <div class="d-flex justify-content-start align-items-center my-4">  
-                                <i class="far fa-chart-bar color-primary mr-3"></i>
-                                <p class="color-primary mb-0" style="font-size: 10pt">Laporan</p>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -128,12 +114,19 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
     data() {
         return {
             id: '',
             openSidebar: false
         }
+    },
+    computed: {
+        ...mapGetters({
+            getUser : 'auth/getUser'
+        })
     },
     async created(){
         this.id = this.$route.params.id
@@ -168,12 +161,12 @@ export default {
     .wrap-sidebar{
         background: white;
         width: 270px;
-        min-height: 100vh;
+        min-height: 100%;
     }
     .wrap-sidebar-middle{
         background: white;
         width: 50px;
-        min-height: 100vh;
+        min-height: 100%;
         display: none;
     }
     .text-menu-item-middle{

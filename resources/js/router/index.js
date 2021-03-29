@@ -16,7 +16,7 @@ import Login from '../views/Login'
 
 import NotFound from '../pages/404'
 
-function requireAuth (role, to, from, next){
+function requireAuth (role, hasParams, to, from, next){
     if (!auth.loggedIn()) {
         next({
             path: '/login',
@@ -24,10 +24,17 @@ function requireAuth (role, to, from, next){
         })
     } else {
         const user = JSON.parse(localStorage.getItem('auth'));
-        if(user.data.role != role){
+        if(role.indexOf(user.data.role) < 0){
             next({
                 path: '/404'
             })
+        }
+        if(hasParams){
+            if(user.data.outlet_id != to.params.id){
+                next({
+                    path: '/404'
+                })
+            }
         }
         next()
     }
@@ -38,25 +45,25 @@ const routes = [
         path: '/',
         component: App,
         name: 'app',
-        beforeEnter: (to, from, next) => requireAuth('admin', to, from, next)
+        beforeEnter: (to, from, next) => requireAuth(['admin'], false, to, from, next)
     },
     {
         path: '/outlet',
         component: Outlet,
         name: 'outlet',
-        beforeEnter: (to, from, next) => requireAuth('owner', to, from, next)
+        beforeEnter: (to, from, next) => requireAuth(['owner'], false, to, from, next)
     },
     {
         path: '/dashboard/:id',
         component: Dashboard,
         name: 'dashboard',
-        beforeEnter: (to, from, next) => requireAuth('owner', to, from, next)
+        beforeEnter: (to, from, next) => requireAuth(['owner', 'admin'], true, to, from, next)
     },
     {
         path: '/kelola',
         component: Kelola,
         name: 'kelola',
-        beforeEnter: (to, from, next) => requireAuth('owner', to, from, next),
+        beforeEnter: (to, from, next) => requireAuth(['owner', 'admin'], true, to, from, next),
         children: [
             {
                 path: 'pegawai/:id',
@@ -82,13 +89,13 @@ const routes = [
         path: '/pesanan/:id',
         component: Pesanan,
         name: 'pesanan',
-        beforeEnter: (to, from, next) => requireAuth('owner', to, from, next)
+        beforeEnter: (to, from, next) => requireAuth(['owner', 'admin', 'kasir'], true, to, from, next)
     },
     {
         path: '/kasir',
         component: Outlet, //sementara
         name: 'kasir',
-        beforeEnter: (to, from, next) => requireAuth('kasir', to, from, next)
+        beforeEnter: (to, from, next) => requireAuth(['kasir'], false, to, from, next)
     },
     {
         path: '/login',

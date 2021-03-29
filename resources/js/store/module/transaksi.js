@@ -2,6 +2,7 @@ import axios from 'axios'
 import auth from '../../Auth'
 import "vue-smooth-dnd";
 import { applyDrag } from '../../utils/helpers'
+import { result } from 'lodash';
 
 const config = {
     headers: {Authorization: "Bearer " + auth.getToken()}
@@ -25,6 +26,143 @@ const getters = {
     },
     getLength: (state) => {
         return state.items.length
+    },
+    getLengthTransaksiHariIni: (state) => {
+        const date = new Date();
+        const thisDay = date.getFullYear() + '-' + ('0' + (date.getMonth()+1)).slice(-2) + '-' + date.getDate();
+        const filter = state.items.map(item => {
+            const transaksi = item.data.filter(i => {
+                let split = i.created_at.split('T')
+                return split[0] == thisDay
+            })
+            return transaksi.length
+        })
+
+        return filter 
+        
+    },
+    getTotalOmsetHariIni: (state) => {
+        const date = new Date();
+        const thisDay = date.getFullYear() + '-' + ('0' + (date.getMonth()+1)).slice(-2) + '-' + date.getDate();
+
+        var omset = 0
+        
+        const filter = state.items.map(item => {
+            const transaksi = item.data.filter(i => {
+                let split = i.created_at.split('T')
+                if(split[0] == thisDay) omset += i.total
+            })
+        })
+
+        return omset
+    },
+    getOmsetPerBulan: (state) => {
+        const date = new Date();
+        const month = [
+            {key : '01', bulan: 'Januari'}, 
+            {key : '02', bulan: 'Februari'}, 
+            {key : '03', bulan: 'Maret'}, 
+            {key : '04', bulan: 'April'}, 
+            {key : '05', bulan: 'Mei'}, 
+            {key : '06', bulan: 'Juni'}, 
+            {key : '07', bulan: 'Juli'}, 
+            {key : '08', bulan: 'Agustus'}, 
+            {key : '09', bulan: 'September'}, 
+            {key : '10', bulan: 'Oktober'}, 
+            {key : '11', bulan: 'November'},
+            {key : '12', bulan: 'Desember'}
+        ]
+
+        var result = []
+
+        for (let index = 0; index < month.length; index++) {
+            var omset = 0
+            var transaksi = 0
+            state.items.map(item => { 
+                item.data.filter(i => {
+                    let item_bulan = i.created_at.substring(5, 7)
+                    if(item_bulan == month[index].key) {
+                        omset += i.total
+                        transaksi++
+                    }
+                })
+            })
+            result.push({
+                key: month[index].key,
+                bulan: month[index].bulan,
+                omset: omset,
+                transaksi: transaksi,
+                bulan_ini: ("0" + (date.getMonth() + 1)).slice(-2) == month[index].key
+            })
+        }
+        return result
+    },
+    getLenghtTransaksiBulanIniPerTanggal: (state) => {
+        const date = new Date();
+        var getDaysInMonth = function(month,year) {
+           return new Date(year, month, 0).getDate();
+        };
+        const numberDayOfMonth = getDaysInMonth(date.getMonth() + 1, date.getFullYear())
+
+        var result = []
+        var result_tanggal = []
+
+        for (let index = 1; index <= numberDayOfMonth; index++) {
+            var transaksi = 0
+
+            state.items.map(item => { 
+                item.data.filter(i => {
+                    let item_tanggal = i.created_at.substring(8, 10)
+                    let tanggal = ("0" + (index)).slice(-2)
+                    if(item_tanggal == tanggal) {
+                        transaksi++
+                    }
+                })
+            })
+
+            if( index <= date.getDate()) {
+                result.push(transaksi)
+            }
+            result_tanggal.push(("0" + (index)).slice(-2))
+        }
+
+        return {
+            tanggal: result_tanggal,
+            data: result
+        }
+    },
+    getLengthTransaksiUntukKasir: (state) => {
+        const date = new Date();
+
+        var result_kasir = []
+        state.items.map(item => { 
+            item.data.filter(i => {
+                let item_bulan = i.created_at.substring(5, 7)
+                if(item_bulan == ("0" + (date.getMonth() + 1)).slice(-2)) {
+                    if (result_kasir.indexOf(i.user.nama) === -1) result_kasir.push(i.user.nama);
+                }
+            })
+        })
+
+        var result = []
+
+        for (let index = 1; index <= result_kasir.length; index++) {
+            var transaksi = 0
+            state.items.map(item => { 
+                item.data.filter(i => {
+                    let item_bulan = i.created_at.substring(5, 7)
+                    if(item_bulan == ("0" + (date.getMonth() + 1)).slice(-2)) {
+                        if (i.user.nama == result_kasir[index - 1]) transaksi++;
+                    }
+                })
+            })
+            result.push(transaksi)
+        }
+
+        return {
+            kasir: result_kasir,
+            data: result
+        }
     }
 }
 
@@ -111,10 +249,15 @@ const actions = {
     async CREATE({ commit, dispatch }, data){
         await commit('SET_ISLOADING_ACTION', true, { root: true })
         await axios.post('api/transaksi', {
-            'nama': data.nama,
-            'alamat': data.alamat,
-            'jenis_kelamin': data.jenis_kelamin,
-            'tlp': data.tlp
+            'outlet_id': data.outlet_id,
+            'detail_pemesanan': data.detail_pemesanan,
+            'member': data.member,
+            'diskon': data.diskon,
+            'pajak': data.pajak,
+            'biaya_tambahan': data.biaya_tambahan,
+            'dibayar': 'Belum Bayar',
+            'total': data.total,
+            'subtotal': data.subtotal
         }, config)
         await dispatch('REFRESH_GET_ALL', data.outlet_id)
         await commit('SET_ISLOADING_ACTION', false, { root: true })
@@ -223,7 +366,25 @@ const actions = {
         commit('SET_INFO_BY_ID', cc)
 
         await commit('SET_ISLOADING_ACTION', false, { root: true })
-    }
+    },
+    async UPDATE_BAYAR({ state, dispatch, commit }, {id, outlet_id}){  //kecepatan masih belum efektif
+        await commit('SET_ISLOADING_ACTION', true, { root: true })
+        await axios.get('api/update-bayar-transaksi/' + id, config)
+        await dispatch('REFRESH_GET_ALL', outlet_id)
+
+        var cc = ''
+        await state.items.map(jp => {
+            jp.data.map(i => {
+                if (i.id == id) {
+                    cc = i
+                }
+            });
+
+        });
+        await commit('SET_INFO_BY_ID', cc)
+
+        await commit('SET_ISLOADING_ACTION', false, { root: true })
+    },
 }
 
 export default {

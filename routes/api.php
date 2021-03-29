@@ -73,6 +73,7 @@ Route::group(['middleware' => 'auth:api'], function(){
     Route::post('multi-restore-transaksi', 'TransaksiController@multiRestore');
     Route::post('multi-force-delete-transaksi', 'TransaksiController@multiForceDelete');
     Route::post('move-status-transaksi', 'TransaksiController@moveStatus');
+    Route::get('update-bayar-transaksi/{id}', 'TransaksiController@updateBayar');
 
     //detail-transaksi
     Route::resource('detail-transaksi', 'DetailTransaksiController');

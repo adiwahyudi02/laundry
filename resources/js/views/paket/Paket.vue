@@ -181,6 +181,12 @@
             <div class="bg-white d-flex justify-content-center py-5 wadah-statistik">
                 <div style="width: 90%">
                     <div class="mb-4">
+                        <p class="mb-0 ml-2 font-weight-bold" style="color: darkslateblue;">Laporan</p>
+                    </div>
+                    <div @click="exportPdf" class="mb-4 d-flex justify-content-center align-items-center py-4 px-4 my-3" style="width: 100%; border-radius: 15px; background: rgb(240,243,248); cursor: pointer">
+                        <p class="mb-0 font-weight-bold color-primary" style="font-family: berlin sans fb; font-size: 13pt">Generate Laporan</p>
+                    </div>
+                    <div class="mb-4">
                         <p class="mb-0 ml-2 font-weight-bold" style="color: darkslateblue;">Statistik</p>
                     </div>
                     <div class="d-flex justify-content-between align-items-center py-2 px-4 my-3" style="width: 100%; border-radius: 15px; background: rgb(240,243,248)">
@@ -350,6 +356,8 @@ import Create from "../../components/paket/Create";
 import Update from "../../components/paket/Update";
 import JwPagination from 'jw-vue-pagination';
 import DoughnutChart from '../../components/vue-doughnut-chart/DoughnutChart'
+import jsPDF from 'jspdf'
+import 'jspdf-autotable'
 
 const customLabels = {
     first: '<<',
@@ -411,7 +419,8 @@ export default {
         ...mapState({
             isLoading: state => state.isLoading,
             isLoadingAction: state => state.isLoadingAction,
-            data: state => state.paket.items
+            data: state => state.paket.items,
+            outlet: state => state.outlet.info
         }),
         ...mapGetters({
             getLengthAndPercent : 'paket/getLengthAndPercent'
@@ -464,6 +473,68 @@ export default {
                 this.dismissCountDown = this.dismissSecs
             }catch(err) {
                 alert(err);
+            }
+        },
+        async exportPdf(){
+            try {
+
+                let id = this.$route.params.id;
+                const outlet = await this.$store.dispatch('outlet/GET_INFO_BY_ID_REQUEST', id);
+
+                var columns = [
+                { dataKey: 'nama_paket', title: 'Nama Paket'},
+                { dataKey: 'jenis', title: 'Jenis'},
+                { dataKey: 'lama_pengerjaan', title: 'Lama Pengerjaan'},
+                { dataKey: 'harga', title: 'Harga'},
+                { dataKey: 'created_at', title: 'Dibuat'}
+                ];
+                var doc = new jsPDF('p', 'pt');
+
+                 //kop
+                doc.addImage('/images/logo-laundry.png', 'JPEG', 50, 30, 75, 70);
+                doc.setFontSize(14);
+                doc.text(this.outlet.nama + ' Application Report', 135, 60);
+                doc.setFontSize(9);
+                doc.text(this.outlet.alamat , 135, 80);
+                doc.line(40, 100, 550, 100);
+
+                doc.setFontSize(11);
+                doc.text('Daftar Paket Laundry', 40, 120);
+
+                doc.setFontSize(8);
+                
+                const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni",
+                    "Juli", "Augustus", "September", "Oktober", "November", "Desember"];
+                let dateObj = new Date();
+                let month = monthNames[dateObj.getMonth()];
+                let day = String(dateObj.getDate()).padStart(2, '0');
+                let year = dateObj.getFullYear();
+                let output = month  + ' '+ day  + ',' + year;
+
+                doc.text('' + output, 465, 120);
+                doc.setFontSize(8);
+                doc.autoTable(columns, this.items, {
+                margin: {top: 140},
+                styles: { fontSize: 8.5 },
+                });
+
+                var auth = JSON.parse(localStorage.getItem('auth'));
+
+                doc.setFontSize(9);
+                doc.text(auth.data.role.charAt(0).toUpperCase() + auth.data.role.slice(1) + ' ' + this.outlet.nama + ', ........................', 420, doc.internal.pageSize.height - 125);
+
+                doc.setFontSize(9);
+                doc.text(auth.data.nama, 420, doc.internal.pageSize.height - 40);
+                
+                doc.save('daftar-paket-laundry-' + this.outlet.nama + '.pdf');
+
+                // this.pdf.nama_file = ''
+                // this.pdf.title = ''
+                // this.pdf.note = ''
+                // await this.$v.pdf.$reset()
+
+            } catch (error) {
+                alert(error)
             }
         }
     },

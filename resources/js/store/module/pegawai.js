@@ -56,7 +56,7 @@ const getters = {
                 'persentase': Math.round((jumlah_admin.length / items.length * 100) * 10) / 10
             },
         }
-    },
+    }
 }
 
 const mutations = {
