@@ -88,11 +88,12 @@ export default {
                         var auth = JSON.parse(localStorage.getItem('auth'));
 
                         if(auth.data.role == 'owner'){
-                            this.$router.push(this.$route.query.redirect || '/outlet')
-                            // window.location = "/outlet";
-                        }else if(auth.data.role == 'admin'){
                             this.$router.push(this.$route.query.redirect || '/dashboard/' + auth.data.outlet_id)
                             // window.location = "/dashboard/" + auth.data.outlet_id;
+                            
+                        }else if(auth.data.role == 'admin'){
+                            this.$router.push(this.$route.query.redirect || '/outlet')
+                            // window.location = "/outlet";
                         }else{
                             this.$router.push(this.$route.query.redirect || '/pesanan/' + auth.data.outlet_id)
                             // window.location = "/pesanan/" + auth.data.outlet_id;

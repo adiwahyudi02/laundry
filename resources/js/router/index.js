@@ -45,13 +45,13 @@ const routes = [
         path: '/',
         component: App,
         name: 'app',
-        beforeEnter: (to, from, next) => requireAuth(['admin'], false, to, from, next)
+        beforeEnter: (to, from, next) => requireAuth(['owner'], false, to, from, next)
     },
     {
         path: '/outlet',
         component: Outlet,
         name: 'outlet',
-        beforeEnter: (to, from, next) => requireAuth(['owner'], false, to, from, next)
+        beforeEnter: (to, from, next) => requireAuth(['admin'], false, to, from, next)
     },
     {
         path: '/dashboard/:id',
