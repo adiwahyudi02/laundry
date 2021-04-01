@@ -64,6 +64,11 @@ Vue.filter('toCurrency', function (value) {
   return formatter.format(value);
 });
 
+//mapbox
+import VueMapbox from "vue-mapbox";
+import Mapbox from "mapbox-gl";
+Vue.use(VueMapbox, { mapboxgl: Mapbox });
+
 const app = new Vue({
     el: '#app',
     router,

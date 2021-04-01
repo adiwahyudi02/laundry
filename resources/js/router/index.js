@@ -12,6 +12,8 @@ import Pesanan from '../views/Pesanan'
 import Pegawai from '../views/pegawai/Pegawai'
 import Pelanggan from '../views/pelanggan/Pelanggan'
 import Paket from '../views/paket/Paket'
+import UserLocation from '../views/maps/UserLocation'
+import Direction from '../views/maps/Direction'
 import Login from '../views/Login'
 
 import NotFound from '../pages/404'
@@ -46,6 +48,16 @@ const routes = [
         component: App,
         name: 'app',
         beforeEnter: (to, from, next) => requireAuth(['admin'], false, to, from, next)
+    },
+    {
+        path: '/user-location',
+        component: UserLocation,
+        name: 'user-location'
+    },
+    {
+        path: '/direction',
+        component: Direction,
+        name: 'direction'
     },
     {
         path: '/outlet',
