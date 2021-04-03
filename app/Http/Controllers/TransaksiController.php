@@ -56,6 +56,14 @@ class TransaksiController extends Controller
 
         $tgl_bayar = ($request->dibayar == 'Lunas') ? date("Y-m-d H:i:s", strtotime('-17 hours', strtotime($date))) : null ;
 
+        $status = '';
+
+        if ($request->jemput) {
+            $status = 'Penjemputan';
+        }else{
+            $status = 'Antrian';
+        }
+
 
         $create = Transaksi::create([
             'outlet_id' =>  $request->outlet_id,
@@ -68,10 +76,15 @@ class TransaksiController extends Controller
             'biaya_tambahan' =>  $request->biaya_tambahan,
             'diskon' =>  $request->diskon,
             'pajak' => $request->pajak,
-            'status' =>  'baru',
+            'status' =>  $status,
             'user_id' => Auth::user()->id,
             'total' => $request->total,
-            'subtotal' => $request->subtotal
+            'subtotal' => $request->subtotal,
+            'penjemputan' => $request->jemput,
+            'pengantaran' => $request->antar,
+            'lng_lat' => $request->lng_lat != null ? $request->lng_lat[0] . ',' . $request->lng_lat[1] : null,
+            'jarak' => $request->jarak,
+            'ongkir' => $request->ongkir
         ]);
         
         $transaksi_id = $create->id;

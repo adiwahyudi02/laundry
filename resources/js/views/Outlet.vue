@@ -50,6 +50,11 @@
                                     <small style="color: gray">
                                         {{ item.alamat }}
                                     </small>
+                                    <div class="mt-1">
+                                        <small style="color: gray">
+                                            LngLat: {{ item.lng_lat }}
+                                        </small>
+                                    </div>
                                 </div>
                                 <div class="d-flex justify-content-end align-items-center">
                                     <i class="fas fa-phone mr-2" style="color: gray"></i>

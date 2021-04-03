@@ -29,7 +29,7 @@ const getters = {
     },
     getLengthTransaksiHariIni: (state) => {
         const date = new Date();
-        const thisDay = date.getFullYear() + '-' + ('0' + (date.getMonth()+1)).slice(-2) + '-' + date.getDate();
+        const thisDay = date.getFullYear() + '-' + ('0' + (date.getMonth()+1)).slice(-2) + '-' + ('0' + (date.getDate())).slice(-2);
         const filter = state.items.map(item => {
             const transaksi = item.data.filter(i => {
                 let split = i.created_at.split('T')
@@ -43,7 +43,7 @@ const getters = {
     },
     getTotalOmsetHariIni: (state) => {
         const date = new Date();
-        const thisDay = date.getFullYear() + '-' + ('0' + (date.getMonth()+1)).slice(-2) + '-' + date.getDate();
+        const thisDay = date.getFullYear() + '-' + ('0' + (date.getMonth()+1)).slice(-2) + '-' + ('0' + (date.getDate())).slice(-2);
 
         var omset = 0
         
@@ -169,27 +169,42 @@ const getters = {
 const mutations = {
     SET_ALL(state, data){
 
-        let baru =  data.filter(item =>  item.status == 'baru')
+        let konfirmasi =  data.filter(item =>  item.status == 'konfirmasi')
+        let penjemputan =  data.filter(item =>  item.status == 'penjemputan')
+        let antrian =  data.filter(item =>  item.status == 'antrian')
         let proses =  data.filter(item =>  item.status == 'proses')
+        let siap_ambil =  data.filter(item =>  item.status == 'siap ambil')
+        let siap_antar =  data.filter(item =>  item.status == 'siap antar')
         let selesai =  data.filter(item =>  item.status == 'selesai')
-        let diambil =  data.filter(item =>  item.status == 'diambil')
         
         var result = [
             {
-                'status': 'baru',
-                'data': baru
+                'status': 'konfirmasi',
+                'data': konfirmasi
+            },
+            {
+                'status': 'penjemputan',
+                'data': penjemputan
+            },
+            {
+                'status': 'antrian',
+                'data': antrian
             },
             {
                 'status': 'proses',
                 'data': proses
             },
             {
-                'status': 'selesai',
-                'data': selesai
+                'status': 'siap ambil',
+                'data': siap_ambil
             },
             {
-                'status': 'diambil',
-                'data': diambil
+                'status': 'siap antar',
+                'data': siap_antar
+            },
+            {
+                'status': 'selesai',
+                'data': selesai
             }
         ]
 
@@ -207,6 +222,13 @@ const mutations = {
     SET_ON_DROP_CARD(state, {columnStatus, dropResult}){
 
         if (dropResult.removedIndex !== null || dropResult.addedIndex !== null) {
+
+            console.log('columnStatus', columnStatus);
+            console.log('dropResult', dropResult);
+
+            // if(columnStatus != ){
+            //     console.log('asdf', columnStatus);
+            // }
             
             const transaksi = state.items
             const column = transaksi.filter(p => p.status === columnStatus)[0]
@@ -255,9 +277,14 @@ const actions = {
             'diskon': data.diskon,
             'pajak': data.pajak,
             'biaya_tambahan': data.biaya_tambahan,
-            'dibayar': 'Belum Bayar',
+            'dibayar': data.dibayar,
             'total': data.total,
-            'subtotal': data.subtotal
+            'subtotal': data.subtotal,
+            'jemput': data.jemput,
+            'antar': data.antar,
+            'lng_lat': data.lng_lat,
+            'jarak': data.jarak,
+            'ongkir': data.ongkir
         }, config)
         await dispatch('REFRESH_GET_ALL', data.outlet_id)
         await commit('SET_ISLOADING_ACTION', false, { root: true })

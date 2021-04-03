@@ -56,9 +56,12 @@
                     <div class="card-column-header py-1" style="color:lightseagreen; z-index: 99; background: #f5f5f7; width: 295px; border-radius: 8px">
                     <span class="column-drag-handle d-flex justify-content-between align-items-center p-2">
                         <p class="mb-0" style="font-size: 10pt;color: lightseagreen">
-                        <b>
-                            {{ column.status.charAt(0).toUpperCase() + column.status.slice(1)}}
-                        </b>
+                            <b>
+                                {{ column.status.charAt(0).toUpperCase() + column.status.slice(1)}}
+                            </b>
+                        </p>
+                        <p class="mb-0 mr-2" style="font-size: 10pt;color: lightseagreen">
+                            Total: {{ column.data.length }}
                         </p>
                     </span>
                     </div>
@@ -71,7 +74,7 @@
                     drag-class="card-ghost"
                     drop-class="card-ghost-drop"
                     :drop-placeholder="dropPlaceholderOptions"
-                    style="max-height: 80vh; overflow-y: scroll"
+                    style="max-height: 60vh; overflow-y: scroll"
                     >
                         
                     <Draggable v-for="card in column.data" :key="column.status + card.id" class="py-1" >
@@ -114,6 +117,22 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div style="width: 45%">
+                                    <div v-if="card.penjemputan == true" class="py-1 color-primary font-weight-bold d-flex justify-content-center align-items-center" style="font-size: 9pt; background: rgb(102,111,193, 0.2); border-radius: 10px; border: none;">
+                                        <p class="mb-0">
+                                            Jemput
+                                        </p>
+                                    </div>
+                                </div>
+                                <div style="width: 45%">
+                                    <div v-if="card.pengantaran == true" class="py-1 color-primary font-weight-bold d-flex justify-content-center align-items-center" style="font-size: 9pt; background: rgb(102,111,193, 0.2); border-radius: 10px; border: none;">
+                                        <p class="mb-0">
+                                            Antar
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         
                     </Draggable>
@@ -123,6 +142,17 @@
         </div>    
         </Container>
         <Info />
+        <b-alert
+        :show="dismissCountDown"
+        dismissible
+        variant="warning"
+        @dismissed="dismissCountDown=0"
+        @dismiss-count-down="countDownChanged"
+        class=""
+        style="position: fixed; bottom: 0; right: 0; z-index: 99; width: 40%; margin-right: 50px;"
+        >
+        {{message}}
+        </b-alert>
     </div>
 </template>
 
@@ -155,7 +185,11 @@ export default {
             filter: 'semua',
             conditionCustom: false,
             start_dt: '',
-            end_dt: ''
+            end_dt: '',
+
+            message: '',
+            dismissSecs: 5,
+            dismissCountDown: 0,
         }
     },
     components: {
@@ -191,12 +225,36 @@ export default {
         },
     },
     methods: {
+        countDownChanged(dismissCountDown) {
+            this.dismissCountDown = dismissCountDown
+        },
         async onCardDrop (columnStatus, dropResult) {
             try {
-                await this.$store.commit('SET_ISLOADING_ACTION', true, { root: true })
-                let id = this.$route.params.id;
-                await this.$store.dispatch('transaksi/ON_CARD_DROP', { columnStatus, dropResult, id})
-                await this.$store.commit('SET_ISLOADING_ACTION', false, { root: true })
+                if (dropResult.removedIndex !== null || dropResult.addedIndex !== null) {
+                    console.log('columnStatus', columnStatus);
+                    console.log('dropResult', dropResult);
+
+                    if(columnStatus != dropResult.payload.status && columnStatus == 'siap antar' && dropResult.payload.pengantaran == false){
+                        this.message = "Transaksi " + dropResult.payload.kode_invoice + " tidak memiliki (pengantaran)."
+                        this.dismissCountDown = this.dismissSecs
+                    }
+                    else if(columnStatus != dropResult.payload.status && dropResult.payload.pengantaran == true && columnStatus == 'siap ambil'){
+                        this.message = "Transaksi " + dropResult.payload.kode_invoice + " memiliki pengantaran (harap masukan ke siap ambil jika sudah siap diantar)."
+                        this.dismissCountDown = this.dismissSecs
+                    }
+                    else if(columnStatus != dropResult.payload.status && dropResult.payload.dibayar == 'Belum Bayar' && columnStatus == 'selesai'){
+                        this.message = "Transaksi " + dropResult.payload.kode_invoice + " belum lunas (harap bayar terlebih dahulu)."
+                        this.dismissCountDown = this.dismissSecs
+                    }
+                    else{
+                        await this.$store.commit('SET_ISLOADING_ACTION', true, { root: true })
+                        let id = this.$route.params.id;
+                        await this.$store.dispatch('transaksi/ON_CARD_DROP', { columnStatus, dropResult, id})
+                        await this.$store.commit('SET_ISLOADING_ACTION', false, { root: true })
+                    }
+                }
+                
+                
             } catch (error) {
                 alert(error)
             }

@@ -54,6 +54,7 @@ const actions = {
         await axios.post('api/outlet', {
             'nama': data.nama,
             'alamat': data.alamat,
+            'lng_lat': data.lng_lat,
             'tlp': data.tlp
         }, config)
         await dispatch('REFRESH_GET_ALL')
@@ -83,6 +84,7 @@ const actions = {
         await axios.put('api/outlet/' + data.id, {
             'nama': data.nama,
             'alamat': data.alamat,
+            'lng_lat': data.lng_lat,
             'tlp': data.tlp
         }, config)
         await commit('SET_INFO_BY_ID', data)

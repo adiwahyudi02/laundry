@@ -17,7 +17,7 @@ export default {
                     id: 'vuechart-example'
                 },
                 xaxis: {
-                    categories: ['Baru', 'Proses', 'Selesai', 'Diambil']
+                    categories: ['konfirmasi', 'penjemputan', 'antrian', 'proses', 'siap ambil', 'siap antar', 'selesai']
                 },
                 colors: ["rgb(102,111,193)", "rgb(102,111,193)"]
             },

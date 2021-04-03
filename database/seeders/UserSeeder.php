@@ -16,42 +16,42 @@ class UserSeeder extends Seeder
     {
         $data = [
             [
-                'nama' => 'Owner1',
+                'nama' => 'Gardapati Prabaswara',
                 'username' => 'owner1', 
                 'password' => bcrypt('password'),
                 'outlet_id' => 1,
                 'role' => 'owner'
             ],
             [
-                'nama' => 'Owner2',
+                'nama' => 'Ganendra Hestamma',
                 'username' => 'owner2', 
                 'password' => bcrypt('password'),
                 'outlet_id' => 2,
                 'role' => 'owner'
             ],
             [
-               'nama' => 'Admin1',
+               'nama' => 'Jayantaka Layana',
                'username' => 'admin1',
                'password' => bcrypt('password'),
                'outlet_id' => 1,
                'role' => 'admin'
             ],
             [
-                'nama' => 'Admin2',
+                'nama' => 'Mandaka Nataya',
                 'username' => 'admin2',
                 'password' => bcrypt('password'),
                 'outlet_id' => 2,
                 'role' => 'admin'
             ],
             [
-                'nama' => 'Kasir1',
+                'nama' => 'Paramudya Sahadya',
                 'username' => 'kasir1', 
                 'password' => bcrypt('password'),
                 'outlet_id' => 1,
                 'role' => 'kasir'
             ],
             [
-                'nama' => 'Kasir2',
+                'nama' => 'Trengginas Turida',
                 'username' => 'kasir2', 
                 'password' => bcrypt('password'),
                 'outlet_id' => 2,

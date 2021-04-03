@@ -16,6 +16,15 @@
                 <textarea v-model.trim="$v.form.alamat.$model" class="form-control form-control-sm mb-0" id="cm" cols="30" rows="6"></textarea>
                 <div class="error" v-if="!$v.form.alamat.required && $v.form.alamat.$anyDirty">Alamat is required.</div>
             </div>
+            <div class="form-group">
+                <label for="lng_lat">Longitude, Latitude:</label>
+                <input type="button" v-model.trim="$v.form.lng_lat.$model" class="form-control form-control-sm mb-0" style="text-align: start" @click="conditionMap = true">
+                <div class="error" v-if="!$v.form.lng_lat.required && $v.form.lng_lat.$anyDirty">Longitude, Latitude harus diisi.</div>
+            </div>
+
+            <div>
+                <MarkerLocation v-if="conditionMap" :coord="form.lng_lat" @hideMap="conditionMap = false" @setcoord="setcoord" />
+            </div>
             <div class="d-flex justify-content-end">
                 <b-button type="submit" class="background-primary btn btn-sm px-5">
                     <div v-if="isLoadingAction">
@@ -46,13 +55,18 @@
 <script>
 import { required } from 'vuelidate/lib/validators'
 import { mapState  } from 'vuex'
+import MarkerLocation from '../maps/MarkerLocation'
 
 export default {
+    components: {
+        MarkerLocation
+    },
     data(){
         return{
             dismissSecs: 5,
             dismissCountDown: 0,
-            form: ''
+            form: '',
+            conditionMap: true
         }
         
     },
@@ -76,12 +90,18 @@ export default {
             },
             alamat: {
                 required
+            },
+            lng_lat: {
+                required
             }
         },
     },
     methods:{
         countDownChanged(dismissCountDown) {
             this.dismissCountDown = dismissCountDown
+        },
+        setcoord(coord){
+            this.form.lng_lat = coord
         },
         async update(){
 

@@ -20,6 +20,7 @@
         "vue-template-compiler": "^2.6.12"
     },
     "dependencies": {
+        "@mapbox/mapbox-gl-directions": "^4.1.0",
         "@mapbox/mapbox-gl-geocoder": "^4.7.0",
         "apexcharts": "^3.26.0",
         "bootstrap": "^4.6.0",
@@ -33,6 +34,7 @@
         "vue-apexcharts": "^1.6.0",
         "vue-doughnut-chart": "^0.3.0",
         "vue-mapbox": "^0.4.1",
+        "vue-mapbox-geocoder": "^0.2.0",
         "vue-router": "^3.5.1",
         "vue-smooth-dnd": "^0.8.1",
         "vue2-google-maps": "^0.10.7",

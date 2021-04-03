@@ -61,6 +61,52 @@
                             </transition-group>
                         </div>
                     </div>
+
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <p class="ml-2 mb-0 font-weight-bold" style="font-size: 9pt; color: black">Antar jemput</p>
+                            <div class="custom-control custom-switch custom-switch-xl">
+                                <input v-model="conditionAntarJemput" @change="form.jemput = conditionAntarJemput, form.antar = conditionAntarJemput" type="checkbox" class="custom-control-input" id="customSwitch1">
+                                <label class="custom-control-label" for="customSwitch1"></label>
+                            </div>
+                        </div>
+                        <div v-if="conditionAntarJemput">
+                            <div class="ml-2 mb-3">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" v-model="form.jemput" @change="setOngkir" type="checkbox" id="inlineCheckbox1" value="option1">
+                                    <label class="form-check-label" style="font-size: 9pt" for="inlineCheckbox1">Penjemputan</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" v-model="form.antar" @change="setOngkir" type="checkbox" id="inlineCheckbox2" value="option2">
+                                    <label class="form-check-label" style="font-size: 9pt" for="inlineCheckbox2">Pengantaran</label>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="mb-3">
+                                    <p class="ml-2 font-weight-bold" style="font-size: 9pt; color: black">Lokasi</p>
+                                    <input type="button" v-if="!conditionMap" v-model.trim="form.lng_lat" class="form-control form-control-sm mb-0 mt-1" style="text-align: start; background: rgb(235,236,240); border: none; outline: none; box-shadow: none; color: gray" @click="conditionMap = true">
+                                </div>
+                                <div v-if="!conditionMap" class="d-flex flex-wrap justify-content-start align-items-center">
+                                    <div class="mb-4 mx-1" style="width: 40%">
+                                        <p class="ml-2 font-weight-bold" style="font-size: 9pt; color: black">Jarak</p>
+                                        <div class="d-flex justify-content-start align-items-center rounded px-3 py-2 wadah-search">
+                                            <input v-model="form.jarak" readonly type="number" class="hidden-arrow" placeholder="" style="width: 95%; background: none; border: none; outline: none; color: gray; font-size: 9pt">
+                                            <p class="ml-2 mb-0 font-weight-bold" style="color: rgb(102,111,193); font-size: 8pt; cursor: pointer">Km</p>
+                                        </div>
+                                    </div>
+                                    <div class="mb-4 mx-1" style="width: 40%">
+                                        <p class="ml-2 font-weight-bold" style="font-size: 9pt; color: black">Ongkir</p>
+                                        <div class="d-flex justify-content-start align-items-center rounded px-3 py-2 wadah-search">
+                                            <p class="mr-2 mb-0 font-weight-bold" style="color: rgb(102,111,193); font-size: 8pt; cursor: pointer">Rp</p>
+                                            <input v-model="form.ongkir" readonly type="number" class="hidden-arrow" placeholder="" style="width: 95%; background: none; border: none; outline: none; color: gray; font-size: 9pt">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <Direction v-if="conditionMap" :outlet="outlet" @hideMap="conditionMap = false" @setcoord="setcoord" @setjarak="setjarak"/>
+                            </div>
+                        </div>
+                    </div>
                     
                     <div class="mb-4">
                         <p class="ml-2 font-weight-bold" style="font-size: 9pt; color: black">Pilih Layanan</p>
@@ -232,6 +278,36 @@
                             </div>
                         </div>
                     </div>
+                    <div>
+                        <p class="ml-2 font-weight-bold" style="font-size: 9pt; color: black">Antar Jemput</p>
+                        <div v-if="form.jemput != false || form.antar != false">
+                            <div class="d-flex flex-wrap justify-content-start align-items-center">
+                                <div v-if="form.jemput != false" class="mb-4 mx-2" style="width: 30%">
+                                    <div>
+                                        <div class="py-1 color-primary font-weight-bold d-flex justify-content-center align-items-center" style="font-size: 9pt; background: rgb(102,111,193, 0.2); border-radius: 10px; border: none;">
+                                            <p class="mb-0">
+                                                Penjemputan
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div v-if="form.antar != false" class="mb-4 mx-2" style="width: 30%">
+                                    <div>
+                                        <div class="py-1 color-primary font-weight-bold d-flex justify-content-center align-items-center" style="font-size: 9pt; background: rgb(102,111,193, 0.2); border-radius: 10px; border: none;">
+                                            <p class="mb-0">
+                                                Pengantaran
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div v-else>
+                            <div class="d-flex align-items-center justify-content-center mb-4" style="width: 100%; height: 70px; background: rgb(235, 236, 240)">
+                                <p class="mb-0" style="font-size: 9pt">Tidak ada antar jemput</p>
+                            </div>
+                        </div>
+                    </div>
                     <div class="mb-4">
                         <p class="ml-2 font-weight-bold" style="font-size: 9pt; color: black">Detail tagihan</p>
                         <!-- {{form}} -->
@@ -280,6 +356,18 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="mb-1" v-if="form.ongkir != ''">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <p class="mb-1 font-weight-bold" style="font-size: 8pt; color: black">Ongkir</p>
+                                        <p class="mb-0 font-weight-bold" style="font-size: 8pt; color: black">{{ form.ongkir }}</p>
+                                    </div>
+                                    <div class="pl-2">
+                                        <div>
+                                            <p v-if="form.jemput != false" class="mb-0" style="font-size: 9pt; color: black">- Penjemputan</p>
+                                            <p v-if="form.antar != false" class="mb-0" style="font-size: 9pt; color: black">- Pengantaran</p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="d-flex justify-content-between align-items-center" style="width: 100%">
                                 <div>
@@ -294,19 +382,18 @@
                                                     <p class="font-weight-bold" style="font-size: 9pt">Uang telah diterima ?</p>
                                                     <div class="d-flex justify-content-start align-items-center">
                                                         <button @click="$bvModal.hide('modal-no-backdrop')" class="btn btn-sm btn-warning mx-1" style="width: 60px; font-size: 9pt; color: white">Tidak</button>
-                                                        <button @click="create(true)" class="btn btn-sm btn-info mx-1" style="width: 60px; font-size: 9pt">Ya</button>
+                                                        <button @click="create('Lunas')" class="btn btn-sm btn-info mx-1" style="width: 60px; font-size: 9pt">Ya</button>
                                                     </div>
                                                 </div>
                                             </div>
                                         </b-modal>
-                                        <button @click="create(false)" class="btn btn-sm btn-warning mx-1 px-3">Bayar nanti</button>
+                                        <button @click="create('Belum Bayar')" class="btn btn-sm btn-warning mx-1 px-3">Bayar nanti</button>
                                     </div>
                                 </div>
                                 <div>
                                     <p class="font-weight-bold" style="font-size: 9pt; color: black">Total tagihan</p>
                                     <p class="color-primary font-weight-bold" style="font-size: 10pt">Rp. {{ total }}</p>
                                 </div>
-                                
                             </div>
                         </div>                        
                     </div>
@@ -329,7 +416,11 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex'
+import Direction from '../maps/Direction'
 export default {
+    components: {
+        Direction
+    },
     data(){
         return {
             items: [],
@@ -345,8 +436,15 @@ export default {
                 diskon: '',
                 pajak: '',
                 biaya_tambahan: '',
-                dibayar: 'Belum Bayar'
-            }
+                dibayar: '',
+                jemput: false,
+                antar: false,
+                lng_lat: '',
+                jarak: '',
+                ongkir: ''
+            },
+            conditionMap: true,
+            conditionAntarJemput: false
         }
     },
     computed: {
@@ -369,7 +467,9 @@ export default {
             return result
         },
         ...mapState({
-            data: state => state.pelanggan.items
+            data: state => state.pelanggan.items,
+            outlet: state => state.outlet.info,
+            ongkirs: state => state.ongkir.items
         }),
 
         subtotal(){
@@ -398,7 +498,7 @@ export default {
         },
         search_pelanggan(){
             this.filterPelanggan()
-        },
+        }
     },
     methods: {
         countDownChanged(dismissCountDown) {
@@ -458,14 +558,43 @@ export default {
             })
             this.pelanggans = search
         },
+
+        setcoord(coord){
+            this.form.lng_lat = coord
+        },
+        setjarak(jarak){
+            this.form.jarak = (jarak/1000).toFixed(2)
+
+            let ongkir = this.ongkirs.find(item => {
+                return this.form.jarak >= item.dari && this.form.jarak <  item.ke
+            })
+            if (ongkir.harga) {
+                if (this.form.jemput && this.form.antar) {
+                    this.form.ongkir = ongkir.harga * 2  
+                }else{
+                    this.form.ongkir = ongkir.harga
+                }
+            }
+        },
+
+        setOngkir(){
+            let ongkir = this.ongkirs.find(item => {
+                return this.form.jarak >= item.dari && this.form.jarak <  item.ke
+            })
+            if (this.form.jemput && this.form.antar) {
+                this.form.ongkir = ongkir.harga * 2  
+            }else if(this.form.jemput || this.form.antar){
+                this.form.ongkir = ongkir.harga
+            }else{
+                this.form.ongkir = ''
+            }
+        },
+
         async create(dibayar){
 
             try{
 
-                if (dibayar) {
-                    this.form.dibayar = 'Lunas'
-                }
-
+                this.form.dibayar = dibayar
                 this.form = {...this.form, 'total': this.total, 'subtotal': this.subtotal, 'outlet_id': this.$route.params.id}
 
                 console.log('form', this.form);
@@ -479,8 +608,14 @@ export default {
                     diskon: '',
                     pajak: '',
                     biaya_tambahan: '',
-                    dibayar: 'Belum Bayar'
+                    dibayar: '',
+                    jemput: false,
+                    antar: false,
+                    lng_lat: '',
+                    jarak: '',
+                    ongkir: ''
                 }
+                this.conditionAntarJemput = false
 
             }catch(err){
                 alert(err);
@@ -493,6 +628,8 @@ export default {
             let id = this.$route.params.id;
             await this.$store.dispatch('paket/GET_ALL', id)
             await this.$store.dispatch('pelanggan/GET_ALL', id)
+            await this.$store.dispatch('outlet/GET_INFO_BY_ID_REQUEST', id)
+            await this.$store.dispatch('ongkir/GET_ALL', id)
         } catch (error) {
             alert(error);
         }

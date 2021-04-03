@@ -24,7 +24,12 @@ class Transaksi extends Model
         'dibayar',
         'user_id',
         'total',
-        'subtotal'
+        'subtotal',
+        'lng_lat',
+        'penjemputan',
+        'pengantaran',
+        'jarak',
+        'ongkir'
     ];
 
     public function outlet()

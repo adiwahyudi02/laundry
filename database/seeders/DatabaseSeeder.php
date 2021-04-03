@@ -18,7 +18,8 @@ class DatabaseSeeder extends Seeder
             OutletSeeder::class,
             UserSeeder::class,
             PaketSeeder::class,
-            MemberSeeder::class
+            MemberSeeder::class,
+            OngkirSeeder::class
         ]);
     }
 }

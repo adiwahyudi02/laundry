@@ -64,11 +64,30 @@
                                                     <div>
                                                         <p class="mb-0 text-untuk-jumlah" style="font-size: 8pt">JUMLAH</p>
                                                             <p class="text-untuk-jumlah" style="font-size: 13pt; text-align: right">{{paketLength}}</p>
-                                                        </div>
                                                     </div>
                                                 </div>
-                                            </router-link>
-                                        </div>
+                                            </div>
+                                        </router-link>
+                                    </div>
+                                    <div class="mr-4 mb-2">
+                                        <router-link :to="{ name: 'ongkir', params: { id: id }}" class="text-decoration-none navigasi-kelola">
+                                            <!-- <div class="bagian-atas-shape-file"></div> -->
+                                            <div class="p-4 bagian-tengah-shape-file">
+                                                <div class="d-flex justify-content-start align-items-start" style="height: 60px">
+                                                    <div class="d-flex justify-content-start align-items-center">
+                                                        <i class="fas fa-tshirt mr-3 color-primary" style="font-size: 13pt"></i>
+                                                        <p class="mb-0 color-primary" style="font-size: 13pt; font-family: berlin sans fb">Ongkir</p>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex justify-content-end align-items-center">
+                                                    <div>
+                                                        <p class="mb-0 text-untuk-jumlah" style="font-size: 8pt">JUMLAH</p>
+                                                            <p class="text-untuk-jumlah" style="font-size: 13pt; text-align: right">{{ongkirLength}}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </router-link>
+                                    </div>
                                 </div>
                                 <transition name="kelolaroute" mode="out-in">
                                     <router-view></router-view>
@@ -104,6 +123,7 @@ export default {
             pegawaiLength: 'pegawai/getLength',
             pelangganLength: 'pelanggan/getLength',
             paketLength: 'paket/getLength',
+            ongkirLength: 'ongkir/getLength',
         })
     },
     async created(){
@@ -114,6 +134,7 @@ export default {
             await this.$store.dispatch('pegawai/REFRESH_GET_ALL', id)
             await this.$store.dispatch('pelanggan/REFRESH_GET_ALL', id)
             await this.$store.dispatch('paket/REFRESH_GET_ALL', id)
+            await this.$store.dispatch('ongkir/REFRESH_GET_ALL', id)
 
         } catch (error) {
             alert(error);

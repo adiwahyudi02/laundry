@@ -43,7 +43,7 @@ const getters = {
             return item.created_at >= thisWeek
         });
 
-        const thisDay = date.getFullYear() + '-' + ('0' + (date.getMonth()+1)).slice(-2) + '-' + date.getDate();
+        const thisDay = date.getFullYear() + '-' + ('0' + (date.getMonth()+1)).slice(-2) + '-' + ('0' + (date.getDate())).slice(-2);
         const jumlah_hari_ini = state.items.filter(item => {
             let split = item.created_at.split('T')
             return split[0] == thisDay

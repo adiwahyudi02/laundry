@@ -12,8 +12,9 @@ import Pesanan from '../views/Pesanan'
 import Pegawai from '../views/pegawai/Pegawai'
 import Pelanggan from '../views/pelanggan/Pelanggan'
 import Paket from '../views/paket/Paket'
-import UserLocation from '../views/maps/UserLocation'
-import Direction from '../views/maps/Direction'
+import Ongkir from '../views/ongkir/Ongkir'
+import MarkerLocation from '../components/maps/MarkerLocation'
+import Direction from '../components/maps/Direction'
 import Login from '../views/Login'
 
 import NotFound from '../pages/404'
@@ -31,7 +32,10 @@ function requireAuth (role, hasParams, to, from, next){
                 path: '/404'
             })
         }
-        if(hasParams){
+        else if(user.data.role == 'owner'){
+            next()
+        }
+        else if(hasParams){
             if(user.data.outlet_id != to.params.id){
                 next({
                     path: '/404'
@@ -51,7 +55,7 @@ const routes = [
     },
     {
         path: '/user-location',
-        component: UserLocation,
+        component: MarkerLocation,
         name: 'user-location'
     },
     {
@@ -93,6 +97,12 @@ const routes = [
                 path: 'paket/:id',
                 name: 'paket',
                 component: Paket
+
+            },
+            {
+                path: 'ongkir/:id',
+                name: 'ongkir',
+                component: Ongkir
 
             }
         ]

@@ -21,6 +21,17 @@
                     <textarea v-model.trim="$v.form.alamat.$model" class="form-control form-control-sm mb-0" id="cm" cols="30" rows="6"></textarea>
                     <div class="error" v-if="!$v.form.alamat.required && $v.form.alamat.$anyDirty">Alamat harus diisi.</div>
                 </div>
+
+                <div class="form-group">
+                    <label for="lng_lat">Longitude, Latitude:</label>
+                    <input type="button" v-model.trim="$v.form.lng_lat.$model" class="form-control form-control-sm mb-0" style="text-align: start" @click="conditionMap = true">
+                    <div class="error" v-if="!$v.form.lng_lat.required && $v.form.lng_lat.$anyDirty">Longitude, Latitude harus diisi.</div>
+                </div>
+
+                <div>
+                    <MarkerLocation v-if="conditionMap" :coord="'107.53922280715506, -6.8766114688664'" @hideMap="conditionMap = false" @setcoord="setcoord" />
+                </div>
+
                 <div class="d-flex justify-content-end">
                     <b-button type="submit" class="background-primary btn btn-sm px-5">
                         <div v-if="isLoadingAction">
@@ -46,6 +57,7 @@
             Data berhasil disimpan.
             </b-alert>
         </b-modal>
+        
     </div>
 </template>
 
@@ -53,8 +65,12 @@
 
 import { required } from 'vuelidate/lib/validators'
 import { mapState  } from 'vuex'
+import MarkerLocation from '../maps/MarkerLocation'
 
 export default {
+    components: {
+        MarkerLocation
+    },
     data(){
         return{
             dismissSecs: 5,
@@ -62,8 +78,10 @@ export default {
             form: {
                 nama: '',
                 tlp: '',
-                alamat: ''
-            }
+                alamat: '',
+                lng_lat: ''
+            },
+            conditionMap: false
         }
     },
     computed: {
@@ -81,6 +99,9 @@ export default {
             },
             alamat: {
                 required
+            },
+            lng_lat: {
+                required
             }
         },
     },
@@ -88,6 +109,10 @@ export default {
 
         countDownChanged(dismissCountDown) {
             this.dismissCountDown = dismissCountDown
+        },
+
+        setcoord(coord){
+            this.form.lng_lat = coord
         },
 
         async create(){
@@ -104,6 +129,7 @@ export default {
                 this.form.nama = ''
                 this.form.tlp = ''
                 this.form.alamat = ''
+                this.form.lng_lat = ''
                 await this.$v.$reset()
             }catch(err){
                 alert(err);

@@ -51,6 +51,43 @@
                     </div>
                 </div>
             </div>
+            <div v-if="info.penjemputan != false || info.pengantaran != false" class="mb-4">
+                <p class="mb-3 ml-2 font-weight-bold" style="font-size: 9pt; color: black">Antar Jemput</p>
+                <div class="d-flex flex-wrap justify-content-start align-items-center">
+                    <div v-if="info.penjemputan != false" class="mb-4 mx-2" style="width: 30%">
+                        <div>
+                            <div class="py-1 color-primary font-weight-bold d-flex justify-content-center align-items-center" style="font-size: 9pt; background: rgb(102,111,193, 0.2); border-radius: 10px; border: none;">
+                                <p class="mb-0">
+                                    Penjemputan
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div v-if="info.pengantaran != false" class="mb-4 mx-2" style="width: 30%">
+                        <div>
+                            <div class="py-1 color-primary font-weight-bold d-flex justify-content-center align-items-center" style="font-size: 9pt; background: rgb(102,111,193, 0.2); border-radius: 10px; border: none;">
+                                <p class="mb-0">
+                                    Pengantaran
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div v-if="info.lng_lat != null" class="mb-4 pl-2">
+                <p class="mb-3 font-weight-bold" style="font-size: 9pt; color: black">Detail Alamat</p>
+                <div class="d-flex justify-content-between aling-items-end">
+                    <div>
+                        <p style="font-size: 9pt">Total Jarak: {{info.jarak}} km</p>
+                        <p style="font-size: 9pt">Lng Ltd : {{info.lng_lat}}</p>
+                    </div>
+                    <div>
+                        <button @click="openMap" class="btn btn-sm btn-primary px-3" style="font-size: 9pt"><i class="fas fa-route mr-2" style="font-size: 9pt"></i> Direction</button>
+                    </div>
+                </div>
+                <DirectionKurir v-if="conditionMap" :outlet="outlet" :alamat="info.lng_lat" @hideMap="conditionMap = false" />
+            </div>
+
             <div class="mb-4" style="width: 100%; height: 1px; background: lightgray"></div>
             
             <p class="mb-3 ml-2 font-weight-bold" style="font-size: 9pt; color: black">Detail Tagihan</p>
@@ -96,6 +133,18 @@
                         <div class="pl-2">
                             <div class="d-flex justify-content-between align-items-center">
                                 <p class="mb-0" style="font-size: 9pt; color: black">Jumlah {{  info.biaya_tambahan | toCurrency}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-1" v-if="info.ongkir">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <p class="mb-1 font-weight-bold" style="font-size: 8pt; color: black">Ongkir</p>
+                            <p class="mb-0 font-weight-bold" style="font-size: 8pt; color: black">{{ info.ongkir }}</p>
+                        </div>
+                        <div class="pl-2">
+                            <div>
+                                <p v-if="info.penjemputan != false" class="mb-0" style="font-size: 9pt; color: black">- Penjemputan</p>
+                                <p v-if="info.pengantaran != false" class="mb-0" style="font-size: 9pt; color: black">- Pengantaran</p>
                             </div>
                         </div>
                     </div>
@@ -166,12 +215,17 @@
 
 import { mapState } from 'vuex'
 import jsPDFInvoiceTemplate, { OutputType, jsPDF } from "jspdf-invoice-template";
+import DirectionKurir from '../maps/DirectionKurir'
 
 export default {
+    components: {
+        DirectionKurir
+    },
     data(){
         return {
             dismissSecs: 5,
             dismissCountDown: 0,
+            conditionMap: false
         }
     },
     computed: {
@@ -248,6 +302,17 @@ export default {
                 }
                 result = [...result, biaya_tambahan]
             }
+            if (this.info.ongkir != null) {
+                const ongkir = {
+                    num: "Ongkir",
+                    desc: this.info.penjemputan != false ? '-' + 'Penjemputan' : '' +  this.info.pengantaran != false ? ' -' + 'Pengantaran' : '',
+                    price: "",
+                    quantity: "",
+                    unit: "",
+                    total: this.info.ongkir.toString()
+                }
+                result = [...result, ongkir]
+            }
 
             console.log(result);
             
@@ -299,8 +364,15 @@ export default {
             };
 
             const pdfObject = await jsPDFInvoiceTemplate(props); //returns number of pages created
+        },
+        async openMap(){
+            let id = this.$route.params.id;
+            const outlet = await this.$store.dispatch('outlet/GET_INFO_BY_ID_REQUEST', id);
+
+            this.conditionMap = true
         }
     }
+    
 }
 </script>
 

@@ -13,6 +13,7 @@ class Outlet extends Model
     protected $fillable = [
         'nama',
         'alamat',
+        'lng_lat',
         'tlp'
     ];
 }

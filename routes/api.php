@@ -84,4 +84,14 @@ Route::group(['middleware' => 'auth:api'], function(){
     Route::post('multi-info-detail-transaksi', 'DetailTransaksiController@multiInfo');
     Route::post('multi-restore-detail-transaksi', 'DetailTransaksiController@multiRestore');
     Route::post('multi-force-delete-detail-transaksi', 'DetailTransaksiController@multiForceDelete');
+
+    //ongkir
+    Route::resource('ongkir', 'OngkirController');
+    Route::get('trashed-ongkir', 'OngkirController@getTrashed');
+    Route::get('restore-ongkir/{id}', 'OngkirController@restore');
+    Route::get('force-delete-ongkir/{id}', 'OngkirController@forceDelete');
+    Route::post('multi-softdelete-ongkir', 'OngkirController@multiDestroy');
+    Route::post('multi-info-ongkir', 'OngkirController@multiInfo');
+    Route::post('multi-restore-ongkir', 'OngkirController@multiRestore');
+    Route::post('multi-force-delete-ongkir', 'OngkirController@multiForceDelete');
 });

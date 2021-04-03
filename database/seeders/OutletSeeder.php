@@ -18,11 +18,13 @@ class OutletSeeder extends Seeder
             [
                'nama' => 'Bersih selalu',
                'alamat' => 'Jalan Panday Kampung Babakan Nanjung',
+               'lng_lat' => '107.53515,-6.88642',
                'tlp' => '0987654321'
             ],
             [
                 'nama' => 'Harum selalu',
                 'alamat' => 'Jalan kalidam',
+                'lng_lat' => '107.55122,-6.87830',
                 'tlp' => '098712345'
             ]
         ];

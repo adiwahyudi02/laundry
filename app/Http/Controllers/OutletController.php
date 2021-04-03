@@ -43,6 +43,7 @@ class OutletController extends Controller
         $create = Outlet::create([
             'nama' =>  $request->nama,
             'alamat' =>  $request->alamat,
+            'lng_lat' =>  $request->lng_lat,
             'tlp' => $request->tlp 
         ]);
 
@@ -96,6 +97,7 @@ class OutletController extends Controller
         $update = Outlet::find($id)->update([
             'nama' =>  $request->nama,
             'alamat' =>  $request->alamat,
+            'lng_lat' =>  $request->lng_lat,
             'tlp' => $request->tlp
         ]);
 
