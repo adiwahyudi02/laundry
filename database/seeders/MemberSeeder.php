@@ -19,13 +19,19 @@ class MemberSeeder extends Seeder
                'nama' => 'Momo',
                'alamat' => 'Jalan Babakan Nanjung',
                'jenis_kelamin' => 'L',
-               'tlp' => '09876333331'
+               'tlp' => '+6285722367921'
             ],
             [
                 'nama' => 'Mimi',
                 'alamat' => 'Jalan Nanjung Panday',
                 'jenis_kelamin' => 'P',
-                'tlp' => '099999345'
+                'tlp' => '+6281546963707'
+            ],
+            [
+                'nama' => 'Mumu',
+                'alamat' => 'Jalan bbkn',
+                'jenis_kelamin' => 'P',
+                'tlp' => '+6289525310735'
             ]
         ];
 

@@ -38,7 +38,21 @@
                                     <i class="fas fa-ellipsis-h" style="color: gray"></i>
                                 </template>
                                 <b-dropdown-item-button @click="redirectEdit(item.id)">Edit</b-dropdown-item-button>
-                                <b-dropdown-item-button @click="softDelete(item.id)">Delete</b-dropdown-item-button>
+                                <b-dropdown-item-button @click="showModalDelete(item.id)">Delete</b-dropdown-item-button>
+                                <b-modal style="width: 200px" :id="'modal-no-backdrop-' + item.id" hide-backdrop hide-header hide-footer hide-header-close centered content-class="shadow" size="sm">
+                                    <div class="d-flex justify-content-center align-items-center">
+                                        <div class="d-flex justify-content-center align-items-center rounded-circle mr-2" style="width: 100px; height: 100px; border: 3px solid rgb(102,111,193)">
+                                            <i class="fas fa-exclamation" style="font-size: 20pt; color: rgb(102,111,193)"></i>
+                                        </div>
+                                        <div>
+                                            <p class="font-weight-bold" style="font-size: 9pt">Anda yakin ingin menghapus?</p>
+                                            <div class="d-flex justify-content-start align-items-center">
+                                                <button @click="$bvModal.hide('modal-no-backdrop'+item.id)" class="btn btn-sm btn-warning mx-1" style="width: 60px; font-size: 9pt; color: white">Tidak</button>
+                                                <button @click="softDelete(item.id)" class="btn btn-sm btn-info mx-1" style="width: 60px; font-size: 9pt">Ya</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </b-modal>
                             </b-dropdown>
                         </div>
                         <router-link :to="{ name: 'dashboard', params: { id: item.id }}" class="text-decoration-none">
@@ -143,6 +157,9 @@ export default {
                 alert(err);
             }
         },
+        showModalDelete(modal){
+            this.$bvModal.show('modal-no-backdrop-'+modal)
+        }  
     },
     async created(){
         try{

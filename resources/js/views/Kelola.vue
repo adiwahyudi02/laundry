@@ -75,7 +75,7 @@
                                             <div class="p-4 bagian-tengah-shape-file">
                                                 <div class="d-flex justify-content-start align-items-start" style="height: 60px">
                                                     <div class="d-flex justify-content-start align-items-center">
-                                                        <i class="fas fa-tshirt mr-3 color-primary" style="font-size: 13pt"></i>
+                                                        <i class="fas fa-exchange-alt mr-3 color-primary" style="font-size: 13pt"></i>
                                                         <p class="mb-0 color-primary" style="font-size: 13pt; font-family: berlin sans fb">Ongkir</p>
                                                     </div>
                                                 </div>

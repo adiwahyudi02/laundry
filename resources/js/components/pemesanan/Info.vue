@@ -14,11 +14,18 @@
                 </div>
             </div>
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <div class="d-flex justify-content-start align-items-center pl-3 py-2" style="width: 250px; border-radius: 10px; background: ghostwhite">
-                    <i class="fas fa-user-circle color-primary mr-2" style="font-size: 30pt"></i>
+                <div class="d-flex justify-content-between align-items-center px-3 py-2" style="width: 250px; border-radius: 10px; background: ghostwhite">
+                    <div class="d-flex justify-content-start align-items-center">
+                        <i class="fas fa-user-circle color-primary mr-2" style="font-size: 30pt"></i>
+                        <div>
+                            <p class="mb-0 font-weight-bold color-primary" style="font-size: 8pt;">{{ info.member.nama }}</p>
+                            <p class="mb-0" style="font-size: 8pt; color: black">{{ info.member.tlp }}</p>
+                        </div>
+                    </div>
                     <div>
-                        <p class="mb-0 font-weight-bold color-primary" style="font-size: 8pt;">{{ info.member.nama }}</p>
-                        <p class="mb-0" style="font-size: 8pt; color: black">{{ info.member.tlp }}</p>
+                        <a :href="'https://wa.me/' + info.member.tlp" target="_blank">
+                            <i class="fab fa-whatsapp text-info" style="font-size: 16pt;"></i>
+                        </a>
                     </div>
                 </div>
                 <div class="px-4 py-2 d-flex justify-content-between align-items-center" style="width: 50%; background: lightyellow; border-radius: 15px">

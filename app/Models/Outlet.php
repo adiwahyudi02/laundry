@@ -14,6 +14,7 @@ class Outlet extends Model
         'nama',
         'alamat',
         'lng_lat',
-        'tlp'
+        'tlp',
+        'user_id'
     ];
 }

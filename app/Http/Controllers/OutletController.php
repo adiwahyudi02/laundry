@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth; 
 
 use App\Models\Outlet;
 
@@ -15,7 +16,7 @@ class OutletController extends Controller
      */
     public function index()
     {
-        $data = Outlet::all();
+        $data = Outlet::where('user_id', Auth::user()->id)->get();
 
         return response()->json([
             'data' => $data
@@ -44,7 +45,8 @@ class OutletController extends Controller
             'nama' =>  $request->nama,
             'alamat' =>  $request->alamat,
             'lng_lat' =>  $request->lng_lat,
-            'tlp' => $request->tlp 
+            'tlp' => $request->tlp,
+            'user_id' => Auth::user()->id
         ]);
 
         if($create){

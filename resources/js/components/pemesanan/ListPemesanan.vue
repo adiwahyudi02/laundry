@@ -300,7 +300,8 @@ export default {
                     this.start_dt = ''
                     this.end_dt = ''
 
-                    const thisDay = date.getFullYear() + '-' + ('0' + (date.getMonth()+1)).slice(-2) + '-' + date.getDate();
+                    const thisDay = date.getFullYear() + '-' + ('0' + (date.getMonth()+1)).slice(-2) + '-' + ('0' + (date.getDate())).slice(-2);
+                    console.log('thisDay', thisDay);
                     const filter = this.pre_items.map(item => {
                         return {
                             'status': item.status,
@@ -310,6 +311,8 @@ export default {
                             })
                         }
                     })
+
+                    console.log('filter', filter);
                     
                     this.items = filter
 
@@ -318,7 +321,7 @@ export default {
                     this.start_dt = ''
                     this.end_dt = ''
 
-                    const thisWeek = date.getFullYear() + '-' + ('0' + (date.getMonth()+1)).slice(-2) + '-' + (date.getDate() - date.getDay());
+                    const thisWeek = date.getFullYear() + '-' + ('0' + (date.getMonth()+1)).slice(-2) + '-' + ('0' + ((date.getDate() - date.getDay()))).slice(-2);
                     const filter = this.pre_items.map(item => {
                         return {
                             'status': item.status,
@@ -335,7 +338,7 @@ export default {
                     this.start_dt = ''
                     this.end_dt = ''
                     
-                    const thisMonth = date.getFullYear() + '-' + ('0' + (date.getMonth()+1)).slice(-2) + '-' + '1';
+                    const thisMonth = date.getFullYear() + '-' + ('0' + (date.getMonth()+1)).slice(-2) + '-' + '01';
                     const filter = this.pre_items.map(item => {
                         return {
                             'status': item.status,

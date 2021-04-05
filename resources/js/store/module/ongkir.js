@@ -22,10 +22,7 @@ const getters = {
         return result
     },
     getLength: (state) => {
-        var result = state.items.filter(item => {
-            return item.role != 'owner'
-        });
-        return result.length
+        return state.items.length
     }
 }
 

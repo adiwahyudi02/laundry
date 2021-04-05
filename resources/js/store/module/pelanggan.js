@@ -33,12 +33,12 @@ const getters = {
     getLengthAndPercent: (state) => {
 
         const date = new Date();
-        const thisMonth = date.getFullYear() + '-' + ('0' + (date.getMonth()+1)).slice(-2) + '-' + '1';
+        const thisMonth = date.getFullYear() + '-' + ('0' + (date.getMonth()+1)).slice(-2) + '-' + '01';
         const jumlah_bulan_ini = state.items.filter(item => {
             return item.created_at >= thisMonth
         });
 
-        const thisWeek = date.getFullYear() + '-' + ('0' + (date.getMonth()+1)).slice(-2) + '-' + (date.getDate() - date.getDay());
+        const thisWeek = date.getFullYear() + '-' + ('0' + (date.getMonth()+1)).slice(-2) + '-' + ('0' + ((date.getDate() - date.getDay()))).slice(-2);
         const jumlah_minggu_ini = state.items.filter(item => {
             return item.created_at >= thisWeek
         });

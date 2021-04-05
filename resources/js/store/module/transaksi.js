@@ -221,15 +221,7 @@ const mutations = {
     },
     SET_ON_DROP_CARD(state, {columnStatus, dropResult}){
 
-        if (dropResult.removedIndex !== null || dropResult.addedIndex !== null) {
-
-            console.log('columnStatus', columnStatus);
-            console.log('dropResult', dropResult);
-
-            // if(columnStatus != ){
-            //     console.log('asdf', columnStatus);
-            // }
-            
+        if (dropResult.removedIndex !== null || dropResult.addedIndex !== null) {            
             const transaksi = state.items
             const column = transaksi.filter(p => p.status === columnStatus)[0]
             const columnIndex = transaksi.indexOf(column)

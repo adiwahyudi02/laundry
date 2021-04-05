@@ -482,7 +482,7 @@ export default {
         },
 
         total(){
-            var total = (Number(this.subtotal) + Number(this.form.pajak) + Number(this.form.biaya_tambahan)) - ((Number(this.form.diskon) / 100) * Number(this.subtotal))
+            var total = (Number(this.subtotal) + Number(this.form.pajak) + Number(this.form.biaya_tambahan) + Number(this.form.ongkir) ) - ((Number(this.form.diskon) / 100) * Number(this.subtotal))
 
             return total;
         }
