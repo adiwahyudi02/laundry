@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 
 use App\Models\Transaksi;
 use App\Models\DetailTransaksi;
+use App\Models\Outlet;
 
 class TransaksiController extends Controller
 {
@@ -52,9 +53,9 @@ class TransaksiController extends Controller
         },$request->detail_pemesanan));
 
         $date = date('Y-m-d H:i:s');
-        $batas_waktu = date("Y-m-d H:i:s", strtotime( '+' . $pengerjaan_terlama .' days' . ' -17 hours', strtotime($date)));
+        $batas_waktu = date("Y-m-d H:i:s", strtotime( '+' . $pengerjaan_terlama .' days' . ' +7 hours', strtotime($date)));
 
-        $tgl_bayar = ($request->dibayar == 'Lunas') ? date("Y-m-d H:i:s", strtotime('-17 hours', strtotime($date))) : null ;
+        $tgl_bayar = ($request->dibayar == 'Lunas') ? date("Y-m-d H:i:s", strtotime('+7 hours', strtotime($date))) : null ;
 
         $status = '';
 
@@ -69,7 +70,7 @@ class TransaksiController extends Controller
             'outlet_id' =>  $request->outlet_id,
             'kode_invoice' =>  $kode_invoice,
             'member_id' => $request->member['id'],
-            'tgl' =>  date("Y-m-d H:i:s", strtotime('-17 hours', strtotime($date))),
+            'tgl' =>  date("Y-m-d H:i:s", strtotime('+7 hours', strtotime($date))),
             'batas_waktu' =>  $batas_waktu,
             'tgl_bayar' => $tgl_bayar,
             'dibayar' =>  $request->dibayar,
@@ -84,7 +85,10 @@ class TransaksiController extends Controller
             'pengantaran' => $request->antar,
             'lng_lat' => $request->lng_lat != null ? $request->lng_lat[0] . ',' . $request->lng_lat[1] : null,
             'jarak' => $request->jarak,
-            'ongkir' => $request->ongkir
+            'ongkir' => $request->ongkir,
+            'dijemput' => 0,
+            'diantar' => 0,
+            'extra' => $request->extra
         ]);
         
         $transaksi_id = $create->id;
@@ -119,7 +123,7 @@ class TransaksiController extends Controller
     public function show($id)
     {
         $data = Transaksi::where('outlet_id', $id)
-                        ->with('outlet', 'member', 'user', 'detail_transaksi.paket')
+                        ->with('outlet', 'member', 'user', 'penjemput', 'pengantar', 'detail_transaksi.paket')
                         ->orderBy('batas_waktu')
                         ->get();
 
@@ -358,7 +362,7 @@ class TransaksiController extends Controller
     { 
         $date = date('Y-m-d H:i:s');
         $update = Transaksi::find($id)->update([
-            'tgl_bayar' => date("Y-m-d H:i:s", strtotime('-17 hours', strtotime($date))),
+            'tgl_bayar' => date("Y-m-d H:i:s", strtotime('+7 hours', strtotime($date))),
             'dibayar' =>  'Lunas'
         ]);
 
@@ -372,5 +376,149 @@ class TransaksiController extends Controller
                 'status' => false
             ]);
         }
+    }
+
+    public function jemput(Request $request, $id)
+    {
+        $update = Transaksi::find($id)->update([
+            'dijemput' =>  Auth::user()->id
+        ]);
+
+        if($update){
+            return response()->json([
+                'status' => true
+            ]);
+        }
+        else{
+            return response()->json([
+                'status' => false
+            ]);
+        }
+    }
+
+    public function antar(Request $request, $id)
+    {
+        $update = Transaksi::find($id)->update([
+            'diantar' =>  Auth::user()->id
+        ]);
+
+        if($update){
+            return response()->json([
+                'status' => true
+            ]);
+        }
+        else{
+            return response()->json([
+                'status' => false
+            ]);
+        }
+    }
+
+    public function BatalJemput(Request $request, $id)
+    {
+        $update = Transaksi::find($id)->update([
+            'dijemput' =>  0
+        ]);
+
+        if($update){
+            return response()->json([
+                'status' => true
+            ]);
+        }
+        else{
+            return response()->json([
+                'status' => false
+            ]);
+        }
+    }
+
+    public function BatalAntar(Request $request, $id)
+    {
+        $update = Transaksi::find($id)->update([
+            'diantar' =>  0
+        ]);
+
+        if($update){
+            return response()->json([
+                'status' => true
+            ]);
+        }
+        else{
+            return response()->json([
+                'status' => false
+            ]);
+        }
+    }
+
+    public function selesaiJemput(Request $request, $id)
+    {
+        $update = Transaksi::find($id)->update([
+            'status' =>  'antrian'
+        ]);
+
+        if($update){
+            return response()->json([
+                'status' => true
+            ]);
+        }
+        else{
+            return response()->json([
+                'status' => false
+            ]);
+        }
+    }
+    public function selesaiAntar(Request $request, $id)
+    {
+        $update = Transaksi::find($id)->update([
+            'status' =>  'selesai'
+        ]);
+
+        if($update){
+            return response()->json([
+                'status' => true
+            ]);
+        }
+        else{
+            return response()->json([
+                'status' => false
+            ]);
+        }
+    }
+    public function bayar(Request $request, $id)
+    {
+        $date = date('Y-m-d H:i:s');
+        $update = Transaksi::find($id)->update([
+            'dibayar' =>  'Lunas',
+            'tgl_bayar' =>  date("Y-m-d H:i:s", strtotime('+7 hours', strtotime($date)))
+        ]);
+
+        if($update){
+            return response()->json([
+                'status' => true
+            ]);
+        }
+        else{
+            return response()->json([
+                'status' => false
+            ]);
+        }
+    }
+    public function allOutlet()
+    {
+        $outlet = Outlet::where('user_id', Auth::user()->id)->get();
+
+        $transaksi = [];
+
+        foreach ($outlet as $value) {
+            $data = Transaksi::where('outlet_id', $value->id)
+                        ->with('outlet', 'member', 'user', 'penjemput', 'pengantar', 'detail_transaksi.paket')
+                        ->orderBy('batas_waktu')
+                        ->get();
+            $transaksi = [...$transaksi, ...$data];
+        }
+
+        return response()->json([
+            'data' => $transaksi
+        ]);
     }
 }

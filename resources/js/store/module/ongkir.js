@@ -1,9 +1,4 @@
 import axios from 'axios'
-import auth from '../../Auth'
-
-const config = {
-    headers: {Authorization: "Bearer " + auth.getToken()}
-} 
 
 const state = () => ({
     items: [],
@@ -44,12 +39,12 @@ const mutations = {
 const actions = {
     async GET_ALL({ commit }, id){
         await commit('SET_ISLOADING', true, { root: true })
-        const item = await axios.get('/api/ongkir/' + id, config);
+        const item = await axios.get('/api/ongkir/' + id);
         await commit('SET_ALL', item.data.data)
         await commit('SET_ISLOADING', false, { root: true })
     },
     async REFRESH_GET_ALL({ commit }, id){
-        const item = await axios.get('/api/ongkir/' + id, config);
+        const item = await axios.get('/api/ongkir/' + id);
         await commit('SET_ALL', item.data.data)
     },
     async CREATE({ commit, dispatch }, data){
@@ -59,13 +54,13 @@ const actions = {
             'dari': data.dari,
             'ke': data.ke,
             'harga': data.harga
-        }, config)
+        })
         await dispatch('REFRESH_GET_ALL', data.outlet_id)
         await commit('SET_ISLOADING_ACTION', false, { root: true })
     },
     async SOFTDELETE_ONE({ dispatch, commit }, data){
         await commit('SET_ISLOADING_ACTION', true, { root: true })
-        await axios.delete('api/ongkir/' + data.id, config)
+        await axios.delete('api/ongkir/' + data.id)
         await dispatch('REFRESH_GET_ALL', data.outlet_id)
         await commit('SET_ISLOADING_ACTION', false, { root: true })
     },
@@ -83,7 +78,7 @@ const actions = {
             'dari': data.dari,
             'ke': data.ke,
             'harga': data.harga
-        }, config)
+        })
         await commit('SET_INFO_BY_ID', data)
         await dispatch('REFRESH_GET_ALL', data.outlet_id)
         await commit('SET_ISLOADING_ACTION', false, { root: true })
@@ -92,18 +87,18 @@ const actions = {
         await commit('SET_ISLOADING_ACTION', true, { root: true })
         await axios.post('api/multi-softdelete-user', {
             selected
-        }, config)
+        })
         await dispatch('REFRESH_GET_ALL')
         await commit('SET_ISLOADING_ACTION', false, { root: true })
     },
     async GET_ALL_TRASH({ commit }){
         await commit('SET_ISLOADING', true, { root: true })
-        const item = await axios.get('/api/trashed-user', config)
+        const item = await axios.get('/api/trashed-user')
         await commit('SET_ALL_TRASH', item.data.trashed)
         await commit('SET_ISLOADING', false, { root: true })
     },
     async REFRESH_GET_ALL_TRASH({ commit }){
-        const item = await axios.get('/api/trashed-user', config)
+        const item = await axios.get('/api/trashed-user')
         await commit('SET_ALL_TRASH', item.data.trashed)
     },
     async GET_INFO_TRASH_BY_ID({ state, commit }, id){
@@ -115,13 +110,13 @@ const actions = {
     },
     async RESTORE_ONE({ dispatch, commit }, id){
         await commit('SET_ISLOADING_ACTION', true, { root: true })
-        await axios.get('/api/restore-user/' + id, config)
+        await axios.get('/api/restore-user/' + id)
         await dispatch('REFRESH_GET_ALL_TRASH')
         await commit('SET_ISLOADING_ACTION', false, { root: true })
     },
     async FORCEDELETE_ONE({ dispatch, commit }, id){
         await commit('SET_ISLOADING_ACTION', true, { root: true })
-        await axios.get('/api/force-delete-user/' + id, config)
+        await axios.get('/api/force-delete-user/' + id)
         await dispatch('REFRESH_GET_ALL_TRASH')
         await commit('SET_ISLOADING_ACTION', false, { root: true })
     },
@@ -129,7 +124,7 @@ const actions = {
         await commit('SET_ISLOADING_ACTION', true, { root: true })
         await axios.post('api/multi-restore-user', {
         selected
-        }, config)
+        })
         await dispatch('REFRESH_GET_ALL_TRASH')
         await commit('SET_ISLOADING_ACTION', false, { root: true })
     },
@@ -137,7 +132,7 @@ const actions = {
         await commit('SET_ISLOADING_ACTION', true, { root: true })
         await axios.post('api/multi-force-delete-user', {
             selected
-        }, config)
+        })
         await dispatch('REFRESH_GET_ALL_TRASH')
         await commit('SET_ISLOADING_ACTION', false, { root: true })
     }

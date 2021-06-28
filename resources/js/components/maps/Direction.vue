@@ -5,7 +5,7 @@
       :mapStyle.sync="mapStyle"
       :center="coordinates"
       :zoom="13"
-      id="map"
+      id="map-crate-pesanan"
       @load="onload"
     >
       <button @click="$emit('hideMap')" class="button-save btn btn-sm btn-info">
@@ -81,19 +81,19 @@ export default {
 </script>
 
 <style>
-  .mapbox-directions-instructions-wrapper{
+  #map-crate-pesanan .mapbox-directions-instructions-wrapper{
     width: 300px;
     height: 300px;
     display: none;
   }
-  .mapbox-directions-instructions{
+  /* .mapbox-directions-instructions{
     position: absolute;
     background: rgba(0,0,0,0.75);
   }
 
   .add-directions-instructions-none{
     display: none;
-  }
+  } */
 
   .button-save {
     position: absolute;

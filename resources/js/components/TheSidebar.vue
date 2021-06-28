@@ -209,6 +209,7 @@ export default {
         }
         .wrap-sidebar-mobile{
             display: block;
+            position: absolute;
         }
     }
 </style>

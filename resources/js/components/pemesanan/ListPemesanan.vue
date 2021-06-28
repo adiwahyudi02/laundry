@@ -306,7 +306,7 @@ export default {
                         return {
                             'status': item.status,
                             'data' : item.data.filter(i => {
-                                let split = i.created_at.split('T')
+                                let split = i.tgl.split(' ')
                                 return split[0] == thisDay
                             })
                         }
@@ -326,7 +326,7 @@ export default {
                         return {
                             'status': item.status,
                             'data' : item.data.filter(i => {
-                                return i.created_at >= thisWeek
+                                return i.tgl >= thisWeek
                             })
                         }
                     })
@@ -343,7 +343,7 @@ export default {
                         return {
                             'status': item.status,
                             'data' : item.data.filter(i => {
-                                return i.created_at >= thisMonth
+                                return i.tgl >= thisMonth
                             })
                         }
                     })
@@ -363,11 +363,15 @@ export default {
 
                 this.pre_items = this.pre_items_pisan
 
+                const start = this.start_dt.split('-')
+                const end = this.end_dt.split('-')
+
                 const r_date_time = this.pre_items.map(item => {
                     return {
                         'status': item.status,
                         'data' : item.data.filter(i => {
-                            return this.start_dt + ' 00:00:00' <= i.created_at && this.end_dt + ' 24:00:00' >= i.created_at
+                            let split = i.tgl.split(' ')
+                            return this.start_dt <= split[0] && this.end_dt >= split[0] || this.start_dt == split[0] || this.end_dt == split[0]
                         })
                     }
                 })
@@ -397,8 +401,18 @@ export default {
         },
         async exportPdf(){
             try {
-                const baru = this.items.find(item => {
-                    if(item.status == 'baru'){
+                const konfirmasi = this.items.find(item => {
+                    if(item.status == 'konfirmasi'){
+                        return item.data
+                    }
+                })
+                const penjemputan = this.items.find(item => {
+                    if(item.status == 'penjemputan'){
+                        return item.data
+                    }
+                })
+                const antrian = this.items.find(item => {
+                    if(item.status == 'antrian'){
                         return item.data
                     }
                 })
@@ -407,18 +421,22 @@ export default {
                         return item.data
                     }
                 })
+                const siap_ambil = this.items.find(item => {
+                    if(item.status == 'siap ambil'){
+                        return item.data
+                    }
+                })
+                const siap_antar = this.items.find(item => {
+                    if(item.status == 'siap antar'){
+                        return item.data
+                    }
+                })
                 const selesai = this.items.find(item => {
                     if(item.status == 'selesai'){
                         return item.data
                     }
                 })
-                const diambil = this.items.find(item => {
-                    if(item.status == 'diambil'){
-                        return item.data
-                    }
-                })
 
-                console.log('result', [...baru.data, ...proses.data, ...selesai.data, ...diambil.data]);
 
                 let id = this.$route.params.id;
                 const outlet = await this.$store.dispatch('outlet/GET_INFO_BY_ID_REQUEST', id);
@@ -457,12 +475,12 @@ export default {
 
                 doc.text('' + output, 465, 120);
                 doc.setFontSize(8);
-                // doc.autoTable(columns, [...baru.data, ...proses.data, ...selesai.data, ...diambil.data], {
+                // doc.autoTable(columns, [...konfirmasi.data, ...penjemputan.data, ...antrian.data, ...proses.data, ...siap_ambil, ...siap_antar], {
                 // margin: {top: 140},
                 // styles: { fontSize: 8.5 },
                 // });
 
-                const rows = [...baru.data, ...proses.data, ...selesai.data, ...diambil.data]
+                const rows = [...konfirmasi.data, ...penjemputan.data, ...antrian.data, ...proses.data, ...siap_ambil.data, ...siap_antar.data, ...selesai.data]
 
 
                 doc.autoTable({

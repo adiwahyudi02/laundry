@@ -57,6 +57,20 @@ class UserSeeder extends Seeder
                 'outlet_id' => 2,
                 'role' => 'kasir'
             ],
+            [
+                'nama' => 'Paramudya Pratama',
+                'username' => 'kurir1', 
+                'password' => bcrypt('password'),
+                'outlet_id' => 1,
+                'role' => 'kurir'
+            ],
+            [
+                'nama' => 'Turida Mandaka',
+                'username' => 'kurir2', 
+                'password' => bcrypt('password'),
+                'outlet_id' => 2,
+                'role' => 'kurir'
+            ],
             
         ];
 

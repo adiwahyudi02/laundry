@@ -92,7 +92,32 @@
                         <button @click="openMap" class="btn btn-sm btn-primary px-3" style="font-size: 9pt"><i class="fas fa-route mr-2" style="font-size: 9pt"></i> Direction</button>
                     </div>
                 </div>
-                <DirectionKurir v-if="conditionMap" :outlet="outlet" :alamat="info.lng_lat" @hideMap="conditionMap = false" />
+                <DirectionInfo v-if="conditionMap" :outlet="outlet" :alamat="info.lng_lat" @hideMap="conditionMap = false" />
+            </div>
+            
+            <div class="d-flex justify-content-start align-items-center mb-4">
+                <div v-if="info.dijemput != false" class="mr-2">
+                    <p class="mb-3 ml-2 font-weight-bold" style="font-size: 9pt; color: black">Dijemput oleh</p>
+                    <div class="px-3 py-2" style="width: 150px; border-radius: 10px; background: ghostwhite">
+                        <div class="d-flex justify-content-start align-items-center">
+                            <i class="fas fa-user-circle color-primary mr-2" style="font-size: 30pt"></i>
+                            <div>
+                                <p class="mb-0 font-weight-bold color-primary" style="font-size: 8pt;">{{ info.penjemput.nama }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div v-if="info.diantar != false" class="mr-2">
+                    <p class="mb-3 ml-2 font-weight-bold" style="font-size: 9pt; color: black">Diantar oleh</p>
+                    <div class="px-3 py-2" style="width: 150px; border-radius: 10px; background: ghostwhite">
+                        <div class="d-flex justify-content-start align-items-center">
+                            <i class="fas fa-user-circle color-primary mr-2" style="font-size: 30pt"></i>
+                            <div>
+                                <p class="mb-0 font-weight-bold color-primary" style="font-size: 8pt;">{{ info.pengantar.nama }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="mb-4" style="width: 100%; height: 1px; background: lightgray"></div>
@@ -124,11 +149,11 @@
                     <div class="mb-1" v-if="info.pajak">
                         <div class="d-flex justify-content-between align-items-center">
                             <p class="mb-1 font-weight-bold" style="font-size: 8pt; color: black">Pajak</p>
-                            <p class="mb-0 font-weight-bold" style="font-size: 8pt; color: black">{{ info.pajak }}</p>
+                            <p class="mb-0 font-weight-bold" style="font-size: 8pt; color: black">{{ (info.pajak / 100) * info.subtotal }}</p>
                         </div>
                         <div class="pl-2">
                             <div class="d-flex justify-content-between align-items-center">
-                                <p class="mb-0" style="font-size: 9pt; color: black">Jumlah {{  info.pajak | toCurrency}}</p>
+                                <p class="mb-0" style="font-size: 9pt; color: black">Jumlah {{  info.pajak }}%</p>
                             </div>
                         </div>
                     </div>
@@ -139,7 +164,7 @@
                         </div>
                         <div class="pl-2">
                             <div class="d-flex justify-content-between align-items-center">
-                                <p class="mb-0" style="font-size: 9pt; color: black">Jumlah {{  info.biaya_tambahan | toCurrency}}</p>
+                                <p class="mb-0" style="font-size: 9pt; color: black">Extra {{ info.extra }}</p>
                             </div>
                         </div>
                     </div>
@@ -222,11 +247,11 @@
 
 import { mapState } from 'vuex'
 import jsPDFInvoiceTemplate, { OutputType, jsPDF } from "jspdf-invoice-template";
-import DirectionKurir from '../maps/DirectionKurir'
+import DirectionInfo from '../maps/DirectionInfo'
 
 export default {
     components: {
-        DirectionKurir
+        DirectionInfo
     },
     data(){
         return {
@@ -290,18 +315,18 @@ export default {
             if (this.info.pajak != null) {
                 const pajak = {
                     num: "Pajak",
-                    desc: "Jumlah Rp." + this.info.pajak,
+                    desc: "Jumlah " + this.info.pajak + "%",
                     price: "",
                     quantity: "",
                     unit: "",
-                    total: this.info.pajak.toString()
+                    total: (this.info.pajak / 100) * this.info.subtotal
                 }
                 result = [...result, pajak]
             }
             if (this.info.biaya_tambahan != null) {
                 const biaya_tambahan = {
                     num: "Biaya tambahan",
-                    desc: "Jumlah Rp." + this.info.biaya_tambahan,
+                    desc: "Extra" + this.info.extra,
                     price: "",
                     quantity: "",
                     unit: "",
@@ -358,8 +383,9 @@ export default {
                     label: " ",
                     invTotalLabel: "Total: ",
                     num: this.info.kode_invoice,
-                    invDate: "Pembayaran: " + this.info.tgl_bayar,
-                    invGenDate: "Nota: " + output,
+                    invDate:  "Pembayaran: " + this.info.tgl_bayar,
+                    invDate: this.info.tgl_bayar != null ? "Pembayaran: " + this.info.tgl_bayar : "Pembayaran: " + 'Belum bayar',
+                    invGenDate: "Kasir: " + this.info.user.nama,
                     header: ["#", "Paket", "Harga", "Kuantitas", "","Subtotal"],
                     headerBorder: false,
                     tableBodyBorder: false,

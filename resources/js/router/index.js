@@ -13,9 +13,16 @@ import Pegawai from '../views/pegawai/Pegawai'
 import Pelanggan from '../views/pelanggan/Pelanggan'
 import Paket from '../views/paket/Paket'
 import Ongkir from '../views/ongkir/Ongkir'
+import Promo from '../views/promo/Promo'
 import MarkerLocation from '../components/maps/MarkerLocation'
 import Direction from '../components/maps/Direction'
 import Login from '../views/Login'
+
+//kurir
+import Kurir from '../views/kurir/Kurir'
+import DirectionKurir from '../components/kurir/DirectionKurir'
+
+
 
 import NotFound from '../pages/404'
 
@@ -104,6 +111,12 @@ const routes = [
                 name: 'ongkir',
                 component: Ongkir
 
+            },
+            {
+                path: 'promo/:id',
+                name: 'promo',
+                component: Promo
+
             }
         ]
     },
@@ -118,6 +131,19 @@ const routes = [
         component: Outlet, //sementara
         name: 'kasir',
         beforeEnter: (to, from, next) => requireAuth(['kasir'], false, to, from, next)
+    },
+    //kurir
+    {
+        path: '/kurir/:id',
+        component: Kurir,
+        name: 'kurir',
+        beforeEnter: (to, from, next) => requireAuth(['kurir'], false, to, from, next)
+    },
+    {
+        path: '/direction-kurir/:id',
+        component: DirectionKurir,
+        name: 'direction-kurir',
+        beforeEnter: (to, from, next) => requireAuth(['kurir'], false, to, from, next)
     },
     {
         path: '/login',

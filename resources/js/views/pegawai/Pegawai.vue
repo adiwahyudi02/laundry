@@ -147,7 +147,16 @@
                                         </div>
                                         <div class="d-flex justify-content-between align-items-center" style="width: 15%">
                                             <i @click="redirectEdit(item.id)" class="fas fa-list-ul" title="Edit" style="color: gray; cursor: pointer"></i>
-                                            <i @click="softDelete(item)" class="far fa-trash-alt" title="Hapus" style="color: gray; cursor: pointer"></i>
+                                            <i @click="showModalDelete(item.id)" class="far fa-trash-alt" title="Hapus" style="color: gray; cursor: pointer"></i>
+                                            <b-modal style="width: 200px" :id="'modal-no-backdrop-' + item.id" hide-backdrop hide-header hide-footer hide-header-close centered content-class="shadow" size="sm">
+                                                <div>
+                                                    <p class="font-weight-bold" style="font-size: 9pt">Hapus {{item.nama}}?</p>
+                                                    <div class="d-flex justify-content-start align-items-center">
+                                                        <button @click="$bvModal.hide('modal-no-backdrop'+item.id)" class="btn btn-sm btn-warning mx-1" style="width: 60px; font-size: 9pt; color: white">Tidak</button>
+                                                        <button @click="softDelete(item)" class="btn btn-sm btn-info mx-1" style="width: 60px; font-size: 9pt">Ya</button>
+                                                    </div>
+                                                </div>
+                                            </b-modal>
                                         </div>
                                     </div>
                                 </div>
@@ -230,6 +239,28 @@
                             <p class="mb-0" style="font-size: 10pt; color: grey">{{lengthAndPercent.kasir.jumlah}} Orang</p>
                         </div>
                     </div>
+                    <div class="d-flex justify-content-between align-items-center py-2 px-4 my-3" style="width: 100%; border-radius: 15px; background: rgb(240,243,248)">
+                        <div class="d-flex justify-content-start align-items-center">
+                            <div class="mr-3">
+                                <template>
+                                    <DoughnutChart
+                                    :percent="lengthAndPercent.kasir.persentase"
+                                    :visibleValue="true"
+                                    :width="80"
+                                    :height="80"
+                                    :backgroundColor="'#ffff'"
+                                    :foregroundColor="'rgb(102,111,193)'">
+                                    </DoughnutChart>
+                                </template>
+                            </div>
+                            <div>
+                                <p class="mb-0 font-weight-bold color-primary" style="font-family: berlin sans fb; font-size: 13pt">Kurir</p>
+                            </div>
+                        </div>
+                        <div>
+                            <p class="mb-0" style="font-size: 10pt; color: grey">{{lengthAndPercent.kurir.jumlah}} Orang</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -269,6 +300,10 @@ export default {
                     persentase: 0
                 },
                 admin: {
+                    jumlah: 0,
+                    persentase: 0
+                },
+                kurir: {
                     jumlah: 0,
                     persentase: 0
                 }
@@ -333,6 +368,9 @@ export default {
             }catch(err) {
                 alert(err);
             }
+        },
+        showModalDelete(modal){
+            this.$bvModal.show('modal-no-backdrop-'+modal)
         },
         async softDelete(item){
             try{

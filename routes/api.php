@@ -74,6 +74,14 @@ Route::group(['middleware' => 'auth:api'], function(){
     Route::post('multi-force-delete-transaksi', 'TransaksiController@multiForceDelete');
     Route::post('move-status-transaksi', 'TransaksiController@moveStatus');
     Route::get('update-bayar-transaksi/{id}', 'TransaksiController@updateBayar');
+    Route::put('jemput-transaksi/{id}', 'TransaksiController@jemput');
+    Route::put('antar-transaksi/{id}', 'TransaksiController@antar');
+    Route::put('batal-jemput-transaksi/{id}', 'TransaksiController@batalJemput');
+    Route::put('batal-antar-transaksi/{id}', 'TransaksiController@batalAntar');
+    Route::put('selesai-jemput-transaksi/{id}', 'TransaksiController@selesaiJemput');
+    Route::put('selesai-antar-transaksi/{id}', 'TransaksiController@selesaiAntar');
+    Route::put('bayar-transaksi/{id}', 'TransaksiController@bayar');
+    Route::get('all-outlet-transaksi', 'TransaksiController@allOutlet');
 
     //detail-transaksi
     Route::resource('detail-transaksi', 'DetailTransaksiController');
@@ -94,4 +102,14 @@ Route::group(['middleware' => 'auth:api'], function(){
     Route::post('multi-info-ongkir', 'OngkirController@multiInfo');
     Route::post('multi-restore-ongkir', 'OngkirController@multiRestore');
     Route::post('multi-force-delete-ongkir', 'OngkirController@multiForceDelete');
+
+    //promo
+    Route::resource('promo', 'PromoController');
+    Route::get('trashed-promo', 'PromoController@getTrashed');
+    Route::get('restore-promo/{id}', 'PromoController@restore');
+    Route::get('force-delete-promo/{id}', 'PromoController@forceDelete');
+    Route::post('multi-softdelete-promo', 'PromoController@multiDestroy');
+    Route::post('multi-info-promo', 'PromoController@multiInfo');
+    Route::post('multi-restore-promo', 'PromoController@multiRestore');
+    Route::post('multi-force-delete-promo', 'PromoController@multiForceDelete');
 });

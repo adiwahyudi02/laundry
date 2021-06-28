@@ -149,6 +149,20 @@
                             </transition-group>
                         </div>
                     </div>
+
+                    <div class="mb-4">
+                        <p class="ml-2 font-weight-bold" style="font-size: 9pt; color: black">Opsi tambahan</p>
+                        <div class="d-flex justify-content-start align-items-center">
+                            <label v-for="item in opsi_tambahan" :key="item.extra" :for="item.extra">
+                                <div class="py-2 px-3 mr-2 color-primary font-weight-bold d-flex justify-content-start align-items-center" style="font-size: 9pt; background: rgb(102,111,193, 0.2); border-radius: 10px; border: none;">
+                                    <input type="checkbox" class="mr-2" :id="item.extra" :value="item" v-model="checkedExtra">
+                                    <p class="mb-0">
+                                        Extra {{item.extra}}
+                                    </p>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
                     
                     <div class="d-flex flex-wrap justify-content-between align-items-center">
                         <div class="mb-4">
@@ -226,12 +240,25 @@
                         <div class="mb-4" style="width: 30%">
                             <p class="ml-2 font-weight-bold" style="font-size: 9pt; color: black">Promo</p>
                             <div v-if="form.diskon != ''">
-                                <div class="d-flex justify-content-start align-items-center pl-3 py-2" style="width: 100%; border-radius: 10px; background: rgb(234,248,246)">
-                                    <div class="d-flex justify-content-center align-items-center mr-3" style="border: 2px solid rgb(141,215,204); border-radius: 50%; width: 25px; height: 25px">
-                                        <i class="fas fa-percent" style="font-size: 9pt; color: rgb(141,215,204)"></i>
+                                <div class="d-flex justify-content-between align-item center pl-3 py-2" style="width: 100%; border-radius: 10px; background: rgb(234,248,246)">
+                                    <div class="d-flex justify-content-start align-items-center">
+                                        <div class="d-flex justify-content-center align-items-center mr-3" style="border: 2px solid rgb(141,215,204); border-radius: 50%; width: 25px; height: 25px">
+                                            <i class="fas fa-percent" style="font-size: 9pt; color: rgb(141,215,204)"></i>
+                                        </div>
+                                        <div>
+                                            <p class="mb-0 font-weight-bold" style="font-size: 10pt; color: rgb(141,215,204)">{{ form.diskon }} %</p>
+                                        </div>
                                     </div>
                                     <div>
-                                        <p class="mb-0 font-weight-bold" style="font-size: 10pt; color: rgb(141,215,204)">{{ form.diskon }} %</p>
+                                        <i class="fas fa-info-circle mr-2" style="color: rgb(141,215,204)" id="popover-1-promo"></i>
+                                        <b-popover
+                                        target="popover-1-promo"
+                                        placement="bottom"
+                                        triggers="hover focus"
+                                        >
+                                            <p class="mb-0 font-weight-bold" style="font-size: 8pt;">Min subtotal: {{ diskon.min_subtotal != null ? diskon.min_subtotal : '-' }}</p>
+                                            <p class="mb-0 font-weight-bold" style="font-size: 8pt;">Min qty: {{ diskon.min_qty != null ? diskon.min_qty : '-' }}</p>
+                                        </b-popover>
                                     </div>
                                 </div>
                             </div>
@@ -249,7 +276,7 @@
                                         <i class="far fa-money-bill-alt" style="font-size: 9pt; color: rgb(255,160,135);"></i>
                                     </div>
                                     <div>
-                                        <p class="mb-0 font-weight-bold" style="font-size: 10pt; color: rgb(255,160,135);">Rp. {{ form.pajak }}</p>
+                                        <p class="mb-0 font-weight-bold" style="font-size: 10pt; color: rgb(255,160,135);">{{ form.pajak }} %</p>
                                     </div>
                                 </div>
                             </div>
@@ -323,7 +350,7 @@
                                         <p class="mb-0" style="font-size: 9pt; color: black">{{ detail.harga * detail.val }}</p>
                                     </div>
                                 </div>
-                                <div class="mb-1" v-if="form.diskon.length">
+                                <div class="mb-1" v-if="form.diskon != ''">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <p class="mb-1 font-weight-bold" style="font-size: 8pt; color: black">Diskon</p>
                                         <p class="mb-0 font-weight-bold" style="font-size: 8pt; color: black">-{{ (form.diskon / 100) * subtotal }}</p>
@@ -334,25 +361,25 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="mb-1" v-if="form.pajak.length">
+                                <div class="mb-1" v-if="form.pajak != ''">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <p class="mb-1 font-weight-bold" style="font-size: 8pt; color: black">Pajak</p>
-                                        <p class="mb-0 font-weight-bold" style="font-size: 8pt; color: black">{{ form.pajak }}</p>
+                                        <p class="mb-0 font-weight-bold" style="font-size: 8pt; color: black">{{ (form.pajak / 100) * subtotal }}</p>
                                     </div>
                                     <div class="pl-2">
                                         <div class="d-flex justify-content-between align-items-center">
-                                            <p class="mb-0" style="font-size: 9pt; color: black">Jumlah Rp.{{  form.pajak }}</p>
+                                            <p class="mb-0" style="font-size: 9pt; color: black">Jumlah {{ form.pajak }}%</p>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="mb-1" v-if="form.biaya_tambahan.length">
+                                <div class="mb-1" v-if="form.biaya_tambahan != ''">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <p class="mb-1 font-weight-bold" style="font-size: 8pt; color: black">Biaya tambahan</p>
                                         <p class="mb-0 font-weight-bold" style="font-size: 8pt; color: black">{{ form.biaya_tambahan }}</p>
                                     </div>
                                     <div class="pl-2">
                                         <div class="d-flex justify-content-between align-items-center">
-                                            <p class="mb-0" style="font-size: 9pt; color: black">Jumlah Rp.{{  form.biaya_tambahan }}</p>
+                                            <p class="mb-0" style="font-size: 9pt; color: black">Extra {{  form.extra.toString() }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -392,7 +419,7 @@
                                 </div>
                                 <div>
                                     <p class="font-weight-bold" style="font-size: 9pt; color: black">Total tagihan</p>
-                                    <p class="color-primary font-weight-bold" style="font-size: 10pt">Rp. {{ total }}</p>
+                                    <p class="color-primary font-weight-bold" style="font-size: 10pt">{{ total | toCurrency  }}</p>
                                 </div>
                             </div>
                         </div>                        
@@ -430,19 +457,36 @@ export default {
             search_pelanggan: '',
             pelanggans: [],
             pre_pelanggans: [],
+            opsi_tambahan: [
+                {
+                    extra: 'deterjen',
+                    harga: 2000
+                },
+                {
+                    extra: 'pewangi',
+                    harga: 1000
+                },
+                {
+                    extra: 'parfum',
+                    harga: 1500
+                },
+            ],
+            checkedExtra: [],
             form: {
                 detail_pemesanan: [],
                 member: '',
                 diskon: '',
-                pajak: '',
+                pajak: 0.5,
                 biaya_tambahan: '',
                 dibayar: '',
                 jemput: false,
                 antar: false,
                 lng_lat: '',
                 jarak: '',
-                ongkir: ''
+                ongkir: '',
+                extra: []
             },
+            diskon: '',
             conditionMap: true,
             conditionAntarJemput: false
         }
@@ -469,20 +513,36 @@ export default {
         ...mapState({
             data: state => state.pelanggan.items,
             outlet: state => state.outlet.info,
-            ongkirs: state => state.ongkir.items
+            ongkirs: state => state.ongkir.items,
+            promos: state => state.promo.items
         }),
 
         subtotal(){
             var subtotal = 0
+            var subqty = 0
             this.form.detail_pemesanan.forEach(element => {
                 subtotal += element.val * element.harga
+                subqty += element.val
             });
+
+            const promo = this.promos.filter(item => {
+                return subtotal >= Number(item.min_subtotal) && subqty >= Number(item.min_qty) && item.status == 'aktif'
+            })
+
+            if (promo.length) {
+                const max = promo.reduce((prev, current) => (prev.diskon > current.diskon) ? prev : current)
+                this.form.diskon = max.diskon
+                this.diskon = max
+            }else{
+                this.form.diskon = ''
+            }
+            
 
             return subtotal;
         },
 
         total(){
-            var total = (Number(this.subtotal) + Number(this.form.pajak) + Number(this.form.biaya_tambahan) + Number(this.form.ongkir) ) - ((Number(this.form.diskon) / 100) * Number(this.subtotal))
+            var total = (Number(this.subtotal) + ((Number(this.form.pajak) / 100) * Number(this.subtotal)) + Number(this.form.biaya_tambahan) + Number(this.form.ongkir) ) - ((Number(this.form.diskon) / 100) * Number(this.subtotal))
 
             return total;
         }
@@ -498,6 +558,9 @@ export default {
         },
         search_pelanggan(){
             this.filterPelanggan()
+        },
+        checkedExtra(){
+            this.extraComputed()
         }
     },
     methods: {
@@ -509,6 +572,7 @@ export default {
             if (this.ConditionDetailPaket == e) {
                 this.ConditionDetailPaket = false
             }else{
+                console.log('asdf', e);
                 this.ConditionDetailPaket = e;
             }
         },
@@ -590,6 +654,16 @@ export default {
             }
         },
 
+        extraComputed(){
+            let biaya_tambahan = 0
+            let extra = this.checkedExtra.map(item => {
+                biaya_tambahan += item.harga
+                return item.extra
+            })
+            this.form.extra = extra
+            this.form.biaya_tambahan = biaya_tambahan
+        },
+
         async create(dibayar){
 
             try{
@@ -613,8 +687,10 @@ export default {
                     antar: false,
                     lng_lat: '',
                     jarak: '',
-                    ongkir: ''
+                    ongkir: '',
+                    extra: [],
                 }
+                this.checkedExtra = []
                 this.conditionAntarJemput = false
 
             }catch(err){
@@ -630,6 +706,7 @@ export default {
             await this.$store.dispatch('pelanggan/GET_ALL', id)
             await this.$store.dispatch('outlet/GET_INFO_BY_ID_REQUEST', id)
             await this.$store.dispatch('ongkir/GET_ALL', id)
+            await this.$store.dispatch('promo/GET_ALL', id)
         } catch (error) {
             alert(error);
         }

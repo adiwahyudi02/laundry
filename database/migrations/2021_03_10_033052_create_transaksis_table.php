@@ -30,9 +30,10 @@ class CreateTransaksisTable extends Migration
             $table->string('jarak', 100)->nullable();
             $table->integer('ongkir')->nullable();
             $table->datetime('tgl_bayar')->nullable();
+            $table->string('extra', 100)->nullable();
             $table->integer('biaya_tambahan')->nullable();
             $table->double('diskon')->nullable();
-            $table->integer('pajak')->nullable();
+            $table->double('pajak')->nullable();
             $table->enum('status', ['konfirmasi', 'penjemputan', 'antrian', 'proses', 'siap ambil', 'siap antar', 'selesai']);
             $table->enum('dibayar', ['Lunas', 'Belum Bayar']);
             $table->integer('subtotal');

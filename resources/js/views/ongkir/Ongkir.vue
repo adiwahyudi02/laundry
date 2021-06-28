@@ -139,7 +139,7 @@
                                                             <p class="mb-0" style="font-size: 9pt; color: black; font-family: sans-serif;">Ke: {{item.ke}} km</p>
                                                         </div>
                                                         <div style="width: 150px">
-                                                            <p class="mb-0" style="font-size: 9pt; color: black; font-family: sans-serif">Rp.{{item.harga}}</p>
+                                                            <p class="mb-0" style="font-size: 9pt; color: black; font-family: sans-serif">{{item.harga | toCurrency}}</p>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -147,7 +147,16 @@
                                         </div>
                                         <div class="d-flex justify-content-between align-items-center" style="width: 15%">
                                             <i @click="redirectEdit(item.id)" class="fas fa-list-ul" title="Edit" style="color: gray; cursor: pointer"></i>
-                                            <i @click="softDelete(item)" class="far fa-trash-alt" title="Hapus" style="color: gray; cursor: pointer"></i>
+                                            <i @click="showModalDelete(item.id)" class="far fa-trash-alt" title="Hapus" style="color: gray; cursor: pointer"></i>
+                                            <b-modal style="width: 200px" :id="'modal-no-backdrop-' + item.id" hide-backdrop hide-header hide-footer hide-header-close centered content-class="shadow" size="sm">
+                                                <div>
+                                                    <p class="font-weight-bold" style="font-size: 9pt">Hapus ongkir jarak {{item.dari}} - {{item.ke}}km?</p>
+                                                    <div class="d-flex justify-content-start align-items-center">
+                                                        <button @click="$bvModal.hide('modal-no-backdrop'+item.id)" class="btn btn-sm btn-warning mx-1" style="width: 60px; font-size: 9pt; color: white">Tidak</button>
+                                                        <button @click="softDelete(item)" class="btn btn-sm btn-info mx-1" style="width: 60px; font-size: 9pt">Ya</button>
+                                                    </div>
+                                                </div>
+                                            </b-modal>
                                         </div>
                                     </div>
                                 </div>
@@ -300,6 +309,9 @@ export default {
             }catch(err) {
                 alert(err);
             }
+        },
+        showModalDelete(modal){
+            this.$bvModal.show('modal-no-backdrop-'+modal)
         },
         async softDelete(item){
             try{

@@ -7,6 +7,7 @@ import pelanggan from './module/pelanggan'
 import paket from './module/paket'
 import transaksi from './module/transaksi'
 import ongkir from './module/ongkir'
+import promo from './module/promo'
 import auth from './module/auth'
 
 Vue.use(Vuex)
@@ -41,6 +42,7 @@ export default new Vuex.Store({
         paket,
         transaksi,
         ongkir,
+        promo,
         auth
     },
     strict: debug

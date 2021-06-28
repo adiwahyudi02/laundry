@@ -43,7 +43,9 @@
                         <input type="radio" v-model.trim="$v.form.role.$model" class="mr-2" value="admin" name="admin">
                         <label for="admin" class="mr-4">Admin</label>
                         <input type="radio" v-model.trim="$v.form.role.$model" class="mr-2" value="kasir" name="kasir">
-                        <label for="kasir">Kasir</label>
+                        <label for="kasir" class="mr-4">Kasir</label>
+                        <input type="radio" v-model.trim="$v.form.role.$model" class="mr-2" value="kurir" name="kurir">
+                        <label for="kurir">Kurir</label>
                     </div>
                     <div class="error" v-if="!$v.form.role.required && $v.form.role.$anyDirty">Role harus diisi.</div>
                 </div>

@@ -1,7 +1,7 @@
 <template>
-  <div class="bg-white d-flex justify-content-center py-5 wadah-statistik">
+  <div class="bg-white d-flex justify-content-center pt-5 wadah-statistik">
         <div style="width: 90%">
-            <div class="mb-4">
+            <div class="mb-1">
                 <p class="mb-0 ml-2 font-weight-bold" style="color: darkslateblue;">Statistik hari ini</p>
             </div>
             <div class="mb-4">
@@ -73,7 +73,7 @@ export default {
     .wadah-statistik{
         width: 100%;
         border-radius: 15px;
-        min-height: 95%;
+        min-height: 65%;
     }
     @media screen and (max-width: 1080px){
         .wadah-statistik{

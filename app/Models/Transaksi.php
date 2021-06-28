@@ -29,7 +29,10 @@ class Transaksi extends Model
         'penjemputan',
         'pengantaran',
         'jarak',
-        'ongkir'
+        'ongkir',
+        'dijemput',
+        'diantar',
+        'extra'
     ];
 
     public function outlet()
@@ -50,5 +53,15 @@ class Transaksi extends Model
     public function detail_transaksi()
     {
         return $this->hasMany(DetailTransaksi::class);
+    }
+
+    public function penjemput()
+    {
+        return $this->belongsTo(User::class, 'dijemput', 'id');
+    }
+
+    public function pengantar()
+    {
+        return $this->belongsTo(User::class, 'diantar', 'id');
     }
 }

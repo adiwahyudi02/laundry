@@ -1,9 +1,4 @@
 import axios from 'axios'
-import auth from '../../Auth'
-
-const config = {
-    headers: {Authorization: "Bearer " + auth.getToken()}
-} 
 
 const state = () => ({
     items: [],
@@ -41,12 +36,12 @@ const mutations = {
 const actions = {
     async GET_ALL({ commit }){
         await commit('SET_ISLOADING', true, { root: true })
-        const item = await axios.get('/api/outlet', config);
+        const item = await axios.get('/api/outlet');
         await commit('SET_ALL', item.data.data)
         await commit('SET_ISLOADING', false, { root: true })
     },
     async REFRESH_GET_ALL({ commit }){
-        const item = await axios.get('/api/outlet', config);
+        const item = await axios.get('/api/outlet');
         await commit('SET_ALL', item.data.data)
     },
     async CREATE({ commit, dispatch }, data){
@@ -56,13 +51,13 @@ const actions = {
             'alamat': data.alamat,
             'lng_lat': data.lng_lat,
             'tlp': data.tlp
-        }, config)
+        })
         await dispatch('REFRESH_GET_ALL')
         await commit('SET_ISLOADING_ACTION', false, { root: true })
     },
     async SOFTDELETE_ONE({ dispatch, commit }, id){
         await commit('SET_ISLOADING_ACTION', true, { root: true })
-        await axios.delete('api/outlet/' + id, config)
+        await axios.delete('api/outlet/' + id)
         await dispatch('REFRESH_GET_ALL')
         await commit('SET_ISLOADING_ACTION', false, { root: true })
     },
@@ -75,7 +70,7 @@ const actions = {
     },
     async GET_INFO_BY_ID_REQUEST({ state, commit }, id){
         // await commit('SET_ISLOADING_ACTION', true, { root: true })
-        const item = await axios.get('/api/outlet/' + id, config);
+        const item = await axios.get('/api/outlet/' + id);
         commit('SET_INFO_BY_ID', item.data.data)
         // await commit('SET_ISLOADING_ACTION', false, { root: true })
     },
@@ -86,7 +81,7 @@ const actions = {
             'alamat': data.alamat,
             'lng_lat': data.lng_lat,
             'tlp': data.tlp
-        }, config)
+        })
         await commit('SET_INFO_BY_ID', data)
         await dispatch('REFRESH_GET_ALL')
         await commit('SET_ISLOADING_ACTION', false, { root: true })
@@ -95,18 +90,18 @@ const actions = {
         await commit('SET_ISLOADING_ACTION', true, { root: true })
         await axios.post('api/multi-softdelete-outlet', {
             selected
-        }, config)
+        })
         await dispatch('REFRESH_GET_ALL')
         await commit('SET_ISLOADING_ACTION', false, { root: true })
     },
     async GET_ALL_TRASH({ commit }){
         await commit('SET_ISLOADING', true, { root: true })
-        const item = await axios.get('/api/trashed-outlet', config)
+        const item = await axios.get('/api/trashed-outlet')
         await commit('SET_ALL_TRASH', item.data.trashed)
         await commit('SET_ISLOADING', false, { root: true })
     },
     async REFRESH_GET_ALL_TRASH({ commit }){
-        const item = await axios.get('/api/trashed-outlet', config)
+        const item = await axios.get('/api/trashed-outlet')
         await commit('SET_ALL_TRASH', item.data.trashed)
     },
     async GET_INFO_TRASH_BY_ID({ state, commit }, id){
@@ -118,13 +113,13 @@ const actions = {
     },
     async RESTORE_ONE({ dispatch, commit }, id){
         await commit('SET_ISLOADING_ACTION', true, { root: true })
-        await axios.get('/api/restore-outlet/' + id, config)
+        await axios.get('/api/restore-outlet/' + id)
         await dispatch('REFRESH_GET_ALL_TRASH')
         await commit('SET_ISLOADING_ACTION', false, { root: true })
     },
     async FORCEDELETE_ONE({ dispatch, commit }, id){
         await commit('SET_ISLOADING_ACTION', true, { root: true })
-        await axios.get('/api/force-delete-outlet/' + id, config)
+        await axios.get('/api/force-delete-outlet/' + id)
         await dispatch('REFRESH_GET_ALL_TRASH')
         await commit('SET_ISLOADING_ACTION', false, { root: true })
     },
@@ -132,7 +127,7 @@ const actions = {
         await commit('SET_ISLOADING_ACTION', true, { root: true })
         await axios.post('api/multi-restore-outlet', {
         selected
-        }, config)
+        })
         await dispatch('REFRESH_GET_ALL_TRASH')
         await commit('SET_ISLOADING_ACTION', false, { root: true })
     },
@@ -140,7 +135,7 @@ const actions = {
         await commit('SET_ISLOADING_ACTION', true, { root: true })
         await axios.post('api/multi-force-delete-outlet', {
             selected
-        }, config)
+        })
         await dispatch('REFRESH_GET_ALL_TRASH')
         await commit('SET_ISLOADING_ACTION', false, { root: true })
     }

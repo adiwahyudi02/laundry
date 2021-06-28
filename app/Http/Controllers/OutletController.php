@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth; 
 
 use App\Models\Outlet;
+use App\Models\Paket;
 
 class OutletController extends Controller
 {
@@ -41,15 +42,45 @@ class OutletController extends Controller
      */
     public function store(Request $request)
     {
-        $create = Outlet::create([
+        $outlet = Outlet::create([
             'nama' =>  $request->nama,
             'alamat' =>  $request->alamat,
             'lng_lat' =>  $request->lng_lat,
             'tlp' => $request->tlp,
             'user_id' => Auth::user()->id
-        ]);
+        ])->id;
 
-        if($create){
+        $pakets = [
+            ['outlet_id' => $outlet,'jenis' => 'Bed Cover','nama_paket' => 'Single', 'lama_pengerjaan' => 3, 'harga' => 15000],
+            ['outlet_id' => $outlet,'jenis' => 'Bed Cover','nama_paket' => 'Queen', 'lama_pengerjaan' => 3, 'harga' => 18000],
+            [ 'outlet_id' => $outlet,'jenis' => 'Bed Cover','nama_paket' => 'King', 'lama_pengerjaan' => 3, 'harga' => 25000],
+            
+            ['outlet_id' => $outlet,'jenis' => 'Boneka','nama_paket' => 'Kecil', 'lama_pengerjaan' => 5, 'harga' => 20000],
+            [ 'outlet_id' => $outlet,'jenis' => 'Boneka','nama_paket' => 'Besar', 'lama_pengerjaan' => 5, 'harga' => 25000],
+            
+            ['outlet_id' => $outlet,'jenis' => 'Jas','nama_paket' => 'Jas Lipat', 'lama_pengerjaan' => 3, 'harga' => 18000],
+            [ 'outlet_id' => $outlet,'jenis' => 'Jas','nama_paket' => 'Jas Gantung', 'lama_pengerjaan' => 3, 'harga' => 15000],
+
+            [ 'outlet_id' => $outlet,'jenis' => 'Kiloan','nama_paket' => 'Reguler', 'lama_pengerjaan' => 1, 'harga' => 15000],
+            ['outlet_id' => $outlet,'jenis' => 'Kiloan','nama_paket' => 'Kilat', 'lama_pengerjaan' => 2, 'harga' => 18000],
+            [ 'outlet_id' => $outlet,'jenis' => 'Kiloan','nama_paket' => 'Express', 'lama_pengerjaan' => 3, 'harga' => 25000],
+
+            ['outlet_id' => $outlet,'jenis' => 'Sepatu','nama_paket' => 'Fast Clean', 'lama_pengerjaan' => 2, 'harga' => 25000],
+            [ 'outlet_id' => $outlet,'jenis' => 'Sepatu','nama_paket' => 'Deep Clean', 'lama_pengerjaan' => 3, 'harga' => 35000],
+
+            ['outlet_id' => $outlet,'jenis' => 'Tas','nama_paket' => 'Kecil', 'lama_pengerjaan' => 5, 'harga' => 15000],
+            [ 'outlet_id' => $outlet,'jenis' => 'Tas','nama_paket' => 'Besar', 'lama_pengerjaan' => 5, 'harga' => 20000],
+
+            ['outlet_id' => $outlet,'jenis' => 'Topi','nama_paket' => 'Fast Clean', 'lama_pengerjaan' => 2, 'harga' => 10000],
+            [ 'outlet_id' => $outlet,'jenis' => 'Topi','nama_paket' => 'Deep Clean', 'lama_pengerjaan' => 3, 'harga' => 15000]
+
+        ];
+
+        foreach ($pakets as $value) {
+            $paket = Paket::create($value);
+        }
+
+        if($outlet){
             return response()->json([
                 'status' => true
             ]);

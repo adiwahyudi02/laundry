@@ -21,7 +21,7 @@ class CreateUsersTable extends Migration
             $table->foreignId('outlet_id')
                     ->constrained()
                     ->onDelete('cascade');
-            $table->enum('role', ['admin', 'kasir', 'owner']);
+            $table->enum('role', ['admin', 'kasir', 'owner', 'kurir']);
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

@@ -40,6 +40,7 @@
 import { required } from 'vuelidate/lib/validators'
 import { mapState } from 'vuex'
 import Auth from '../Auth'
+import axios from 'axios'
 
 export default {
     data(){
@@ -87,17 +88,25 @@ export default {
                     } else {
                         var auth = JSON.parse(localStorage.getItem('auth'));
 
-                        if(auth.data.role == 'owner'){
-                            this.$router.push(this.$route.query.redirect || '/outlet')
-                            // window.location = "/outlet";
-                        }else if(auth.data.role == 'admin'){
-                            this.$router.push(this.$route.query.redirect || '/dashboard/' + auth.data.outlet_id)
-                            // window.location = "/dashboard/" + auth.data.outlet_id;
-                        }else{
-                            this.$router.push(this.$route.query.redirect || '/pesanan/' + auth.data.outlet_id)
-                            // window.location = "/pesanan/" + auth.data.outlet_id;
+                        if (auth) {
+                            axios.defaults.headers.common['Authorization'] = "Bearer " + auth.token
                         }
-                        // window.location = "/outlet";
+
+
+                        if(auth.data.role == 'owner'){
+                            // this.$router.push(this.$route.query.redirect || '/outlet')
+                            window.location.href = "#/outlet";
+                        }else if(auth.data.role == 'admin'){
+                            // this.$router.push(this.$route.query.redirect || '/dashboard/' + auth.data.outlet_id)
+                            window.location.href = "#/dashboard/" + auth.data.outlet_id;
+                        }else if(auth.data.role == 'kasir'){
+                            // this.$router.push(this.$route.query.redirect || '/pesanan/' + auth.data.outlet_id)
+                            window.location.href = "#/pesanan/" + auth.data.outlet_id;
+                        }else {
+                            // this.$router.push(this.$route.query.redirect || '/kurir/' + auth.data.outlet_id)
+                            window.location.href = "#/kurir/" + auth.data.outlet_id;
+                        }
+                        // window.location.hash = "/outlet";
                     }
                 })
                 await this.$store.commit('SET_ISLOADING_ACTION', false, { root: true })
